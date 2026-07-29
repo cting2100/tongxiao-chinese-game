@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
 <meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
-<title>銅小國語補救教學 — 策略闖關遊戲</title>
+<title>銅小國語補救教學 — 綜合測驗</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Microsoft JhengHei','PingFang TC','Noto Sans TC',sans-serif;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);min-height:100vh;display:flex;align-items:center;justify-content:center}
@@ -13,83 +13,50 @@ body{font-family:'Microsoft JhengHei','PingFang TC','Noto Sans TC',sans-serif;ba
 .scr{display:none}.scr.on{display:block;animation:fi .35s}
 @keyframes fi{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 h1{font-size:1.5em;color:#1a1a2e;margin-bottom:4px}h2{font-size:1.1em;color:#5b3a8c;margin-bottom:6px}
-.tip{background:#fef3c7;border-left:4px solid #f59e0b;padding:8px 12px;border-radius:0 8px 8px 0;margin:8px 0;font-size:.82em;text-align:left;color:#92400e}
-.tip b{color:#d97706}
+.tip{background:#fef3c7;border-left:4px solid #f59e0b;padding:8px 12px;border-radius:0 8px 8px 0;margin:8px 0;font-size:.82em;text-align:left;color:#92400e}.tip b{color:#d97706}
 .btn{display:inline-block;padding:9px 22px;border:none;border-radius:10px;font-size:.95em;font-weight:bold;cursor:pointer;transition:all .2s;font-family:inherit}
 .btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
-.btn-p{background:linear-gradient(135deg,#7c5ce7,#a855f7);color:#fff}
-.btn-s{background:linear-gradient(135deg,#10b981,#34d399);color:#fff}
-.btn-w{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff}
-.btn-lg{padding:11px 32px;font-size:1.15em}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-p{background:linear-gradient(135deg,#7c5ce7,#a855f7);color:#fff}.btn-s{background:linear-gradient(135deg,#10b981,#34d399);color:#fff}.btn-w{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff}
+.btn-lg{padding:11px 32px;font-size:1.15em}.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .inp{margin:10px 0}.inp label{display:block;font-size:.9em;color:#2d1b69;font-weight:bold;margin-bottom:4px}
-.inp input{width:100%;max-width:260px;padding:9px 12px;border:3px solid #d4c8f0;border-radius:10px;font-size:1em;text-align:center;outline:none}
-.inp input:focus{border-color:#7c5ce7}
-
-/* 進度 */
+.inp input{width:100%;max-width:260px;padding:9px 12px;border:3px solid #d4c8f0;border-radius:10px;font-size:1em;text-align:center;outline:none}.inp input:focus{border-color:#7c5ce7}
 .pbar{background:#e8e0f5;height:7px;border-radius:4px;margin:6px 0;overflow:hidden}.pbar-f{background:linear-gradient(90deg,#7c5ce7,#a855f7);height:100%;border-radius:4px;transition:width .5s;width:0%}
 .gtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:4px}
 .badge{padding:3px 10px;border-radius:12px;font-size:.75em;font-weight:bold}
 .bs{background:#7c5ce7;color:#fff}.bg{background:#f3effa;color:#5b3a8c}
-.bw{background:#fef3c7;color:#d97706}.br{background:#fee2e2;color:#dc2626}
-
 .fb{margin:4px 0;min-height:18px;font-size:.9em;font-weight:bold}.fb.ok{color:#059669}.fb.ng{color:#dc2626}
 .explain{background:#f0fdf4;border-left:3px solid #10b981;padding:8px 12px;border-radius:0 8px 8px 0;margin:4px 0;font-size:.82em;text-align:left;line-height:1.5;color:#065f46;display:none}
-
-/* 部首配對 */
 .rm{padding:10px;margin:6px 0}.rboxes{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
 .rb{padding:8px 12px;background:#fff;border:3px dashed #c4b5fd;border-radius:8px;font-size:.85em;font-weight:bold;color:#6d28d9;cursor:pointer;min-width:60px;transition:all .2s}
-.rb:hover,.rb.sel{border-color:#7c5ce7;background:#ede9fe}
-.rb.ok{border-color:#10b981;background:#d1fae5;color:#065f46;cursor:default}
+.rb:hover,.rb.sel{border-color:#7c5ce7;background:#ede9fe}.rb.ok{border-color:#10b981;background:#d1fae5;color:#065f46;cursor:default}
 .rcards{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .rc{padding:9px 12px;background:#fff;border:2px solid #ddd6fe;border-radius:8px;font-size:.9em;font-weight:bold;cursor:pointer;color:#2d1b69;transition:all .2s}
 .rc:hover{border-color:#a78bfa}.rc.sel{border-color:#7c5ce7;background:#ede9fe;transform:scale(1.06)}
-.rc.done{background:#d1fae5;border-color:#10b981;color:#065f46;cursor:default}
-.rc.err{border-color:#ef4444;background:#fee2e2;animation:shake .4s}
-
-/* 轉折配對 */
+.rc.done{background:#d1fae5;border-color:#10b981;color:#065f46;cursor:default}.rc.err{border-color:#ef4444;background:#fee2e2;animation:shake .4s}
 .pair-area{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px 0}
 .pair-left,.pair-right{display:flex;flex-direction:column;gap:5px;min-width:140px}
 .pair-card{padding:8px 12px;background:#fff;border:2px solid #d1d4fa;border-radius:8px;font-size:.85em;cursor:pointer;transition:all .2s;text-align:center}
-.pair-card:hover{border-color:#a78bfa}.pair-card.sel{border-color:#7c5ce7;background:#ede9fe}
-.pair-card.matched{background:#d1fae5;border-color:#10b981;cursor:default}
-
-/* 排序 */
+.pair-card:hover{border-color:#a78bfa}.pair-card.sel{border-color:#7c5ce7;background:#ede9fe}.pair-card.matched{background:#d1fae5;border-color:#10b981;cursor:default}
 .sort-items{display:flex;flex-direction:column;gap:5px;margin:6px 0}
 .sort-i{padding:9px 12px;background:#fff;border:2px solid #d1d4fa;border-radius:8px;cursor:pointer;font-size:.85em;text-align:left;transition:all .2s;color:#2d1b69}
-.sort-i:hover{border-color:#a78bfa}.sort-i.sel{border-color:#7c5ce7;background:#ede9fe}
-.sort-i.done{background:#dbeafe;border-color:#60a5fa;cursor:default;opacity:.6}
+.sort-i:hover{border-color:#a78bfa}.sort-i.sel{border-color:#7c5ce7;background:#ede9fe}.sort-i.done{background:#dbeafe;border-color:#60a5fa;cursor:default;opacity:.6}
 .sort-res{display:flex;gap:4px;flex-wrap:wrap;min-height:30px;margin:4px 0}
 .sort-chip{padding:4px 8px;background:#dbeafe;border:1px solid #60a5fa;border-radius:6px;font-size:.78em;color:#1e40af}
-
-/* 標點填空 */
 .fill-p{font-size:.9em;line-height:1.8;text-align:left;margin:6px 0;color:#2d1b69}
 .fill-gap{display:inline-block;width:40px;text-align:center;border-bottom:2px dashed #f59e0b;margin:0 3px;cursor:pointer;font-size:1.2em;font-weight:bold;color:#d97706;transition:all .2s}
 .fill-gap:hover{background:#fef3c7}.fill-gap.done{background:#d1fae5;border-color:#10b981;color:#065f46}
 .punct-palette{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0}
 .pp{padding:8px 14px;background:#fff;border:2px solid #fbbf24;border-radius:8px;cursor:pointer;font-size:1.1em;transition:all .2s}
 .pp:hover{background:#fef3c7}.pp.used{background:#e8e0f5;border-color:#c4b5fd;cursor:default;opacity:.5}
-
-/* T圖表 */
 .tchart{display:flex;gap:4px;margin:8px 0;justify-content:center}
-.tc-col{flex:1;border:2px solid #c4b5fd;border-radius:8px;padding:8px;min-height:120px}
-.tc-col h4{font-size:.8em;color:#6d28d9;margin-bottom:4px}
+.tc-col{flex:1;border:2px solid #c4b5fd;border-radius:8px;padding:8px;min-height:100px}.tc-col h4{font-size:.8em;color:#6d28d9;margin-bottom:4px}
 .tc-pool{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:4px 0}
 .tc-chip{padding:5px 10px;background:#fff;border:2px solid #a78bfa;border-radius:6px;font-size:.78em;cursor:pointer;transition:all .2s}
-.tc-chip:hover{background:#ede9fe}
-.tc-chip.placed{background:#d1fae5;border-color:#10b981;cursor:default}
-
-/* 結果 */
-.stats{margin:8px auto;max-width:400px}.sr{display:flex;justify-content:space-between;padding:5px 10px;border-bottom:1px solid #e8e0f5;font-size:.9em}
-.sr:last-child{border-bottom:none}.sl{color:#7c6ba0}.sv{color:#2d1b69;font-weight:bold}
-.diag-box{background:#fafafa;border:2px solid #e8e0f5;border-radius:10px;padding:10px;margin:8px auto;max-width:460px}
-.diag-box h3{color:#5b3a8c;font-size:.85em;margin-bottom:5px}
-.diag-bar{margin:4px 0;display:flex;align-items:center;gap:5px}
-.diag-label{width:70px;text-align:right;font-size:.75em;color:#5b3a8c;font-weight:bold}
-.diag-track{flex:1;height:14px;background:#e8e0f5;border-radius:7px;overflow:hidden}
-.diag-fill{height:100%;border-radius:7px;transition:width 1s}.dg{background:linear-gradient(90deg,#10b981,#34d399)}.dy{background:linear-gradient(90deg,#f59e0b,#fbbf24)}.dr{background:linear-gradient(90deg,#ef4444,#f87171)}
-.diag-pct{width:34px;font-size:.7em;color:#7c6ba0}
-
+.tc-chip:hover{background:#ede9fe}.tc-chip.placed{background:#d1fae5;border-color:#10b981;cursor:default}
+.stats{margin:8px auto;max-width:400px}.sr{display:flex;justify-content:space-between;padding:5px 10px;border-bottom:1px solid #e8e0f5;font-size:.9em}.sr:last-child{border-bottom:none}.sl{color:#7c6ba0}.sv{color:#2d1b69;font-weight:bold}
+.diag-box{background:#fafafa;border:2px solid #e8e0f5;border-radius:10px;padding:10px;margin:8px auto;max-width:460px}.diag-box h3{color:#5b3a8c;font-size:.85em;margin-bottom:5px}
+.diag-bar{margin:4px 0;display:flex;align-items:center;gap:5px}.diag-label{width:70px;text-align:right;font-size:.75em;color:#5b3a8c;font-weight:bold}
+.diag-track{flex:1;height:14px;background:#e8e0f5;border-radius:7px;overflow:hidden}.diag-fill{height:100%;border-radius:7px;transition:width 1s}.dg{background:linear-gradient(90deg,#10b981,#34d399)}.dy{background:linear-gradient(90deg,#f59e0b,#fbbf24)}.dr{background:linear-gradient(90deg,#ef4444,#f87171)}.diag-pct{width:34px;font-size:.7em;color:#7c6ba0}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
 @media(max-width:480px){.ct{padding:10px 6px}h1{font-size:1.2em}.rm{padding:6px}}
 </style>
@@ -98,221 +65,125 @@ h1{font-size:1.5em;color:#1a1a2e;margin-bottom:4px}h2{font-size:1.1em;color:#5b3
 
 <div class="scr on" id="ss">
   <div style="font-size:2.8em">🏫</div>
-  <h1>銅小國語補救教學</h1>
-  <h2>策略闖關遊戲（依 Day1-10 課程設計）</h2>
-  <div class="tip"><b>📖 遊戲說明：</b>每個關卡使用一種課堂學過的解題策略，幫助你一步步找到答案！</div>
-  <div class="inp"><label for="ni">你的名字：</label><input type="text" id="ni" placeholder="例如：小明" maxlength="20" autocomplete="off"></div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px;margin:10px 0" id="dg"></div>
-  <button class="btn btn-p btn-lg" id="bg" disabled>開始 →</button>
+  <h1>銅小國語補救教學綜合測驗</h1>
+  <h2>共 18 題（依 Day1-9 課程設計）</h2>
+  <div class="tip"><b>📖 說明：</b>每題上方會有課堂教過的「解題策略」提示，幫你回憶上課內容，引導你一步步作答！</div>
+  <div class="inp"><label for="ni">請輸入你的名字：</label><input type="text" id="ni" placeholder="例如：小明" maxlength="20" autocomplete="off"></div>
+  <button class="btn btn-p btn-lg" id="bg" disabled>開始作答 ▶</button>
 </div>
 
 <div class="scr" id="sg">
-  <div class="gtop"><span class="badge bs" id="sn"></span><span class="badge bg">⭐ <span id="cs">0</span> 分</span></div>
+  <div class="gtop"><span class="badge bs" id="sn"></span><span class="badge bg">⭐ <span id="cs">0</span> 分</span><span class="badge bg">📝 <span id="qp">1/18</span></span></div>
   <div class="pbar"><div class="pbar-f" id="pb"></div></div>
   <div class="tip" id="stip"></div>
   <div id="gz"></div>
   <div class="fb" id="fb"></div><div class="explain" id="ex"></div>
-  <button class="btn btn-p" id="bn" style="display:none">下一關 ▶</button>
+  <button class="btn btn-p" id="bn" style="display:none">下一題 ▶</button>
 </div>
 
 <div class="scr" id="se">
-  <div style="font-size:2.8em">🏆</div><h1>全部完成！</h1>
+  <div style="font-size:2.8em">🏆</div><h1>測驗完成！</h1>
   <div class="stats"><div class="sr"><span class="sl">玩家</span><span class="sv" id="rn"></span></div><div class="sr"><span class="sl">總分</span><span class="sv" id="rs"></span></div><div class="sr"><span class="sl">答對</span><span class="sv" id="rc"></span></div></div>
   <div class="diag-box" id="diag"></div>
-  <button class="btn btn-w btn-lg" id="br" style="margin-top:8px">再玩一次 🔄</button>
+  <button class="btn btn-w btn-lg" id="br" style="margin-top:8px">再測一次 🔄</button>
 </div>
 
 </div>
 <script>
 const $=id=>document.getElementById(id);
 
-// ═══ 關卡定義（依課程Day1-10，每關使用課堂教授的「解題策略」作為鷹架）═══
-const DAYS=[
-{id:'day1',name:'Day1 文本閱讀',icon:'📖',desc:'策略：時間畫箭頭、圈出生詞',qs:[
-{type:'sort',title:'📖 颱風天 — 時間順序排列',tip:'💡 <b>策略：時間畫箭頭</b>——先找出時間詞，再依照先後順序排列。口訣：「先做什麼？再做什麼？畫箭頭就知道！」',items:['今天一早，窗外風很大，雨一直下','昨天晚上，媽媽說颱風要來了','晚上，颱風慢慢離開，風雨變小了','下午，風雨更大了，還停電了','隔天早上，天氣放晴了'],ans:[1,0,3,2,4],x:'時間順序：昨天晚上→今天一早→下午→晚上→隔天早上。時間詞幫我們排好順序！',pts:25},
-{type:'choice',title:'📖 勇敢的小烏龜 — 故事理解',tip:'💡 <b>策略：圈圈找答案</b>——圈出題目的關鍵詞，回文章找答案。口訣：「題目先看，圈出重點，回文章找！」',q:'小烏龜最後學到了什麼道理？',o:['石頭很危險，不要隨便爬','只要有信心，什麼都不用學','勇敢嘗試，可以看到不一樣的世界','小鳥不應該多管閒事'],a:2,x:'小烏龜從膽小變勇敢，因為牠試了之後發現「原來勇敢一點，就可以看到不一樣的世界」！',pts:20}
-]},
-{id:'day2',name:'Day2 部首大搜查',icon:'🔍',desc:'策略：拆開找規則',qs:[
-{type:'radical',title:'🔍 部首配對 — 口部/手部/足部',tip:'💡 <b>策略：拆開找規則</b>——把字拆開看部首，想想跟身體的哪個部位有關。口訣：「字拆一拆，部首看出來！」',radicals:[{name:'口部（嘴巴）',chars:['吃','唱','喝'],desc:'吃東西、唱歌、喝水都用嘴巴！'},{name:'扌部（手）',chars:['打','拍','拉'],desc:'打鼓、拍手、拉門都要用到手！'},{name:'足部（腳）',chars:['跑','跳','踢'],desc:'跑步、跳高、踢球都用腳！'}],pts:20},
-{type:'radical',title:'🔍 火部分類 — 溫度/動作/物品',tip:'💡 <b>策略：找規律</b>——火部的字都跟火有關，但可以再分成三類。口訣：「火燒成四點，分類更清楚！」',radicals:[{name:'🔥 溫度感覺',chars:['熱'],desc:'天氣很熱——是感覺'},{name:'🔥 加熱動作',chars:['燒','炒','煮','烤'],desc:'燒菜、炒飯、煮湯、烤肉——用火做事情'},{name:'🔥 火相關物',chars:['燈','煙'],desc:'點燈發光、冒煙——跟火有關的東西'}],pts:20}
-]},
-{id:'day3',name:'Day3 心部水部',icon:'💧',desc:'策略：看得到vs看不到',qs:[
-{type:'radical',title:'💧 心部 vs 水部 分類挑戰',tip:'💡 <b>策略：對比分類</b>——氵是看得到的水，心是看不到的心情。想一想：這個字跟水有關？還是跟心情有關？',radicals:[{name:'氵部（水）',chars:['海','洗','淚'],desc:'海水是水、洗手用水、眼淚也是水'},{name:'心部（心情）',chars:['想','怕','急','忘'],desc:'想念、害怕、著急、忘記——都是心的感覺'}],pts:20},
-{type:'choice',title:'💧 四字詞結構 — 找出規律',tip:'💡 <b>策略：拆→看→歸納</b>——把四字詞拆開來看零件的排列方式。像拼積木！',q:'「朵朵白雲」的結構是哪一種？',o:['AAB型（疊字在前）','數字型（數字+名詞）','ABCC型（疊字在後）','沒有特別規律'],a:0,x:'「朵朵白雲」= 朵(疊)+朵(疊)+白+雲，是AAB型。像「小小世界」也是這種結構！',pts:20}
-]},
-{id:'day4',name:'Day4 句型與時間',icon:'⏰',desc:'策略：時間畫箭頭、詞語拆解',qs:[
-{type:'sort',title:'⏰ 做早餐 — 步驟排序',tip:'💡 <b>策略：時間畫箭頭＋順序詞提示</b>——用「首先→接著→然後→最後」來檢查順序！',items:['從冰箱拿出吐司和蛋','把吐司放進烤箱烤','把蛋打入鍋子裡煎','坐下來享用美味的早餐'],ans:[0,1,2,3],x:'先用「首先、接著、然後、最後」檢查：首先拿材料→接著烤吐司→然後煎蛋→最後享用！',pts:25},
-{type:'fill',title:'⏰ 選用正確的順序詞',tip:'💡 <b>策略：順序詞提示法</b>——＿＿先拿材料，＿＿烤吐司，＿＿煎蛋，＿＿坐下來吃。選正確的詞填空！',text:'____，從冰箱拿出吐司和蛋。____，把吐司放進烤箱烤。____，把蛋打入鍋子裡煎。____，坐下來享用美味的早餐！',blanks:['＿＿＿＿','＿＿＿＿','＿＿＿＿','＿＿＿＿'],choices:['首先','接著','然後','最後'],ans:['首先','接著','然後','最後'],x:'「首先→接著→然後→最後」是標準的時間順序詞！',pts:20}
-]},
-{id:'day5',name:'Day5 轉折閱讀',icon:'🔄',desc:'策略：轉折看後面',qs:[
-{type:'pair',title:'🔄 轉折詞配對 — 前半句 vs 後半句',tip:'💡 <b>策略：轉折看後面</b>——轉折詞像火車道岔，讓句子轉彎！口訣：「轉折詞像路標，重點在後半！」',left:['小明很想出去玩','這個包包很漂亮','他個子很小','我已經很累了'],right:['但是外面下大雨，不能出去','可是價錢太貴了，買不起','但是力氣非常大','卻還是把功課寫完了'],ans:[0,1,2,3],x:'轉折詞（但是、可是、卻）後面才是重點！前半說了一件事，轉折後意思不一樣了。',pts:20},
-{type:'choice',title:'🔄 辨別句型 — 轉折還是因果？',tip:'💡 <b>策略：看前後關係</b>——前後相反是「轉折」，前因後果是「因果」。想一想：前面和後面是什麼關係？',q:'「因為下雨了，所以我帶雨傘。」這是什麼句型？',o:['轉折句（前後相反）','因果句（前因後果）','並列句（兩件事並排）','條件句（有條件才有結果）'],a:1,x:'下雨（原因）→帶雨傘（結果），這是因果句！轉折句是「雖然…但是…」，前後意思要相反喔。',pts:20}
-]},
-{id:'day6',name:'Day6 轉折進階',icon:'🧭',desc:'策略：無轉折詞也找轉折',qs:[
-{type:'choice',title:'🧭 無轉折詞找對比',tip:'💡 <b>策略：轉折偵探</b>——有時候作者不放轉折詞，但意思有轉彎！訓練自己感覺意思的變化。',q:'「說好要去公園玩。下雨了，不能去了。」這兩句話之間，少了哪個轉折詞？',o:['因為','所以','但是','首先'],a:2,x:'雖然沒有「但是」，但意思轉彎了！本來要去→下雨不能去。加上「但是」就更清楚了。',pts:20},
-{type:'choice',title:'🧭 多重轉折 — 追蹤故事變化',tip:'💡 <b>策略：轉折追蹤表</b>——長故事可能有好幾個轉折！逐一追蹤，每次轉折發生什麼變化。',q:'小明想學鋼琴，但是家裡沒有鋼琴。他沒有放棄，每天去學校音樂教室練習。然而，有一天音樂教室關門了。不過，老師看到他的努力，借給他教室鑰匙。最後小明學會了彈鋼琴。\n\n故事中發生了幾次轉折？',o:['1次','2次','3次','沒有轉折'],a:2,x:'三次轉折：(1)想學但沒鋼琴→(2)練習但教室關了→(3)關了但老師借鑰匙。每次轉折都帶來新變化！',pts:25}
-]},
-{id:'day7',name:'Day7 標點與故事',icon:'✏️',desc:'策略：標點醫生、故事山',qs:[
-{type:'fill',title:'✏️ 標點醫生 — 幫文章加標點',tip:'💡 <b>策略：肢體動作記憶</b>——句號（。）畫圓圈、逗號（，）輕拍、問號（？）歪頭、驚嘆號（！）舉手。試試看！',text:'今天天氣真好□萬里無雲□微風輕輕吹來□你喜歡這樣的天氣嗎□太棒了□我們一起去公園玩吧□',blanks:['□','□','□','□','□','□'],choices:['。','，','？','！'],ans:['。','，','。','？','！','！'],x:'天氣真好（句號）→萬里無雲（逗號）→微風吹來（句號）→你喜歡嗎（問號）→太棒了（驚嘆號）→去玩吧（驚嘆號）！',pts:25},
-{type:'sort',title:'✏️ 故事山 — 大隊接力',tip:'💡 <b>策略：故事山圖示法</b>——口訣：「故事三兄弟，爬山有意思！山腳開始說，上山是經過，山頂最精彩，下山有結果！」',items:['比賽開始，小明是第一棒（開始）','順利交棒給第二棒小華（經過）','最後一棒衝向終點，全班歡呼（高潮）','雖然沒得第一，但全班都很開心（結果）'],ans:[0,1,2,3],x:'故事山：開始（起跑）→經過（交棒）→高潮（衝終點）→結果（開心結局）！',pts:25}
-]},
-{id:'day8',name:'Day8 童話與證據',icon:'📚',desc:'策略：5元素、找證據',qs:[
-{type:'choice',title:'📚 小蜜蜂與大象 — 5元素填空',tip:'💡 <b>策略：童話5元素</b>——角色、場景、問題、解決、結局。口訣：「誰在哪裡遇到什麼麻煩？怎麼解決？最後怎樣？」',q:'童話「小蜜蜂與大象」中，故事的「問題」是什麼？',o:['大象不喜歡花園','大象的鼻子卡在樹洞裡','小蜜蜂不願意幫忙','大象想要吃蜂蜜'],a:1,x:'問題=大象鼻子卡住（麻煩來了！）。解決=小蜜蜂用尾針刺鼻子打噴嚏。結局=大象變友善。',pts:20},
-{type:'choice',title:'📚 兩隻小羊 — 找證據',tip:'💡 <b>策略：找證據</b>——每個答案都要從文章裡找到對應的句子！口訣：「不是亂猜，要有證據！」',q:'兩隻小羊為什麼最後都順利過橋了？從故事中找證據。',o:['其中一隻放棄過橋了','黑羊先退到岸邊讓白羊過，然後自己再過','牠們找另一座橋','橋突然變寬了'],a:1,x:'證據句：「黑羊先退到岸邊讓白羊過，然後黑羊再過橋。結果，兩隻羊都順利過了橋。」禮讓是關鍵！',pts:20}
-]},
-{id:'day9',name:'Day9 說明文',icon:'📋',desc:'策略：T圖表、因果關係',qs:[
-{type:'tchart',title:'📋 仙人掌 T圖表 — 結構 vs 功能',tip:'💡 <b>策略：左邊右邊寫</b>——口訣：「左邊寫外表，右邊寫功能。左是長怎樣，右是做什麼！」',labels:['結構（長什麼樣子）','功能（有什麼用處）'],chips:['粗厚的莖','儲存水分','針狀的葉子','減少水分蒸發','淺而廣的根','可以快速吸收雨水'],ans:{left:['粗厚的莖','針狀的葉子','淺而廣的根'],right:['儲存水分','減少水分蒸發','可以快速吸收雨水']},x:'仙人掌為了在沙漠生存，演化出儲水構造！粗莖=儲水、針葉=減少蒸發、淺根=快速吸水。',pts:25},
-{type:'choice',title:'📋 因果關係判斷',tip:'💡 <b>策略：因為…所以…</b>——用「因為…所以…」測試是不是因果關係。口訣：「有因果，用因為所以！」',q:'「因為沙漠缺水，所以仙人掌的莖可以儲存水分。」這句話中，哪個是「因」？哪個是「果」？',o:['因：沙漠缺水／果：莖可儲水','因：莖可儲水／果：沙漠缺水','兩個都是因','兩個都是果'],a:0,x:'因為→沙漠缺水（原因）；所以→莖可以儲水（結果）。因在前，果在後！',pts:20}
-]},
-{id:'day10',name:'Day10 綜合挑戰',icon:'🌟',desc:'策略：綜合運用',qs:[
-{type:'choice',title:'🌟 綜合 — 形近字辨別',tip:'💡 <b>策略：劃劃刪錯的</b>——把確定錯的選項先劃掉。口訣：「錯的劃掉，剩的就是對的！」',q:'「他個性隨和，很容易與人相處。」句中「處」字讀音和下列何者相同？',o:['到「處」都是花朵（ㄔㄨˋ）','無法共「處」一室（ㄔㄨˇ）','恰到好「處」（ㄔㄨˋ）','住「處」布置華麗（ㄔㄨˋ）'],a:1,x:'「與人相處」的處唸ㄔㄨˇ（動詞）；其他三個都唸ㄔㄨˋ（名詞）。用刪去法找答案！',pts:20},
-{type:'choice',title:'🌟 綜合 — 擬人法',tip:'💡 <b>策略：找證據</b>——擬人法就是把東西當人寫。看看哪個選項把東西寫得像人在做事情？',q:'下列哪一句用了「擬人法」？',o:['房間安靜得連針掉地上都能聽見','微風輕輕吹過樹梢','星星在夜空中眨著眼睛','花園裡開滿了五顏六色的花'],a:2,x:'「星星眨眼睛」——把星星當作人來寫，說它會眨眼睛！這就是擬人法。',pts:20}
-]}
+// ═══ 全部題目（Day1-9，依課程順序，使用課堂策略作鷹架）═══
+const ALL=[
+// ── Day1 文本閱讀 ──
+{day:'Day1 文本閱讀',type:'sort',title:'📖 颱風天 — 時間順序',tip:'💡 策略：時間畫箭頭——先找出時間詞，再照先後排列。口訣：「先做什麼？再做什麼？畫箭頭就知道！」',items:['今天一早，窗外風很大，雨一直下','昨天晚上，媽媽說颱風要來了','晚上，颱風慢慢離開，風雨變小了','下午，風雨更大了，還停電了','隔天早上，天氣放晴了'],ans:[1,0,3,2,4],x:'時間順序：昨天晚上→今天一早→下午→晚上→隔天早上。時間詞幫我們排列事件！',pts:25},
+{day:'Day1 文本閱讀',type:'choice',title:'📖 勇敢的小烏龜 — 故事理解',tip:'💡 策略：圈圈找答案——圈出題目關鍵詞，回文章找答案。口訣：「題目先看，圈出重點，回文章找！」',q:'小烏龜最後學到了什麼道理？',o:['石頭很危險，不要隨便爬','只要有信心，什麼都不用學','勇敢嘗試，可以看到不一樣的世界','小鳥不應該多管閒事'],a:2,x:'小烏龜從膽小變勇敢，因為牠嘗試後發現「原來勇敢一點，就可以看到不一樣的世界」！',pts:20},
+// ── Day2 部首 ──
+{day:'Day2 部首',type:'radical',title:'🔍 部首配對（一）口部/手部/足部',tip:'💡 策略：拆開找規則——把字拆開看部首，和身體部位對應。口訣：「字拆一拆，部首看出來！」',radicals:[{name:'口部（嘴巴）',chars:['吃','唱','喝'],desc:'吃東西、唱歌、喝水都用嘴巴'},{name:'扌部（手）',chars:['打','拍','拉'],desc:'打鼓、拍手、拉門都要用手'},{name:'足部（腳）',chars:['跑','跳','踢'],desc:'跑步、跳高、踢球都用腳'}],pts:25},
+{day:'Day2 部首',type:'radical',title:'🔍 部首配對（二）火部分類',tip:'💡 策略：找規律——火部字都跟火有關，再分三類。口訣：「火燒成四點（灬），分類更清楚！」',radicals:[{name:'🔥 溫度感覺',chars:['熱'],desc:'天氣很熱——是感覺'},{name:'🔥 加熱動作',chars:['燒','炒','煮','烤'],desc:'燒菜、炒飯、煮湯、烤肉——用火做事'},{name:'🔥 相關物品',chars:['燈','煙'],desc:'點燈發光、冒煙——火相關的東西'}],pts:25},
+// ── Day3 心部水部 ──
+{day:'Day3 心部水部',type:'radical',title:'💧 心部 vs 水部 分類',tip:'💡 策略：對比分類——氵是看得到的水，心是看不到的心情。這個字跟水有關還是心情有關？',radicals:[{name:'氵部（水）',chars:['海','洗','淚'],desc:'海水是水、洗手用水、眼淚也是水'},{name:'心部（心情）',chars:['想','怕','急','忘'],desc:'想念、害怕、著急、忘記——都是心的感覺'}],pts:25},
+{day:'Day3 心部水部',type:'choice',title:'💧 四字詞結構',tip:'💡 策略：拆→看→歸納——把四字詞拆開看零件排列。像拼積木！',q:'「朵朵白雲」是哪一種結構？',o:['AAB型（疊字在前）','數字型（數字+名詞）','ABCC型（疊字在後）','沒有規律'],a:0,x:'「朵朵白雲」= 朵(疊)+朵(疊)+白+雲，是AAB型。像「小小世界」也是！',pts:20},
+// ── Day4 句型與時間 ──
+{day:'Day4 句型時間',type:'sort',title:'⏰ 做早餐步驟排序',tip:'💡 策略：時間畫箭頭＋順序詞提示——用「首先→接著→然後→最後」檢查！',items:['從冰箱拿出吐司和蛋','把吐司放進烤箱烤','把蛋打入鍋子裡煎','坐下來享用美味的早餐'],ans:[0,1,2,3],x:'首先拿材料→接著烤吐司→然後煎蛋→最後享用！',pts:25},
+{day:'Day4 句型時間',type:'fill',title:'⏰ 選用順序詞填空',tip:'💡 策略：順序詞提示法——「首先→接著→然後→最後」是時間順序的基本公式！',text:'____，從冰箱拿出吐司和蛋。____，把吐司放進烤箱烤。____，把蛋打入鍋子裡煎。____，坐下來享用美味的早餐！',blanks:['＿＿＿＿','＿＿＿＿','＿＿＿＿','＿＿＿＿'],choices:['首先','接著','然後','最後'],ans:['首先','接著','然後','最後'],x:'「首先→接著→然後→最後」是標準時間順序詞！',pts:20},
+// ── Day5 轉折閱讀 ──
+{day:'Day5 轉折',type:'pair',title:'🔄 轉折詞配對（前半↔後半）',tip:'💡 策略：轉折看後面——轉折詞像火車道岔讓句子轉彎！口訣：「轉折詞像路標，重點在後半！」',left:['小明很想出去玩','這個包包很漂亮','他個子很小','我已經很累了'],right:['但是外面下大雨，不能出去','可是價錢太貴了，買不起','但是力氣非常大','卻還是把功課寫完了'],ans:[0,1,2,3],x:'轉折詞（但是、可是、卻）後面的才是重點！前半句說了一件事，後半句意思不一樣。',pts:25},
+{day:'Day5 轉折',type:'choice',title:'🔄 轉折 vs 因果',tip:'💡 策略：看前後關係——前後相反是「轉折」，前因後果是「因果」。兩者不要搞混！',q:'「因為下雨了，所以我帶雨傘。」這是什麼句型？',o:['轉折句（前後相反）','因果句（前因後果）','並列句（兩件事並排）','條件句'],a:1,x:'下雨（原因）→帶雨傘（結果），這是因果句！轉折句則是「雖然…但是…」前後相反。',pts:20},
+// ── Day6 轉折進階 ──
+{day:'Day6 轉折進階',type:'choice',title:'🧭 無轉折詞找轉折',tip:'💡 策略：轉折偵探——作者有時不放轉折詞，但意思有轉彎！要自己感覺意思的變化。',q:'「說好要去公園玩。下雨了，不能去了。」這兩句之間少了哪個轉折詞？',o:['因為','所以','但是','首先'],a:2,x:'雖然沒有「但是」，但意思轉彎了！本來要去→下雨不能去。這就是隱藏的轉折。',pts:20},
+{day:'Day6 轉折進階',type:'choice',title:'🧭 多重轉折追蹤',tip:'💡 策略：轉折追蹤表——大故事可能有好幾個轉折，逐一追蹤每次的變化！',q:'小明想學鋼琴，但是家裡沒有鋼琴。他沒有放棄，每天去學校音樂教室練習。然而有一天音樂教室關門了。不過老師看到他的努力，借給他教室鑰匙。最後小明學會了彈鋼琴。\n\n總共發生了幾次轉折？',o:['1次','2次','3次','沒有轉折'],a:2,x:'三次轉折：(1)想學但沒鋼琴→(2)練習但教室關了→(3)關了但老師借鑰匙。',pts:25},
+// ── Day7 標點與故事 ──
+{day:'Day7 標點故事',type:'fill',title:'✏️ 標點醫生',tip:'💡 策略：肢體動作記憶——句號（。）畫圓圈、逗號（，）輕拍、問號（？）歪頭、驚嘆號（！）舉手。',text:'今天天氣真好□萬里無雲□微風輕輕吹來□你喜歡這樣的天氣嗎□太棒了□我們一起去公園玩吧□',blanks:['□','□','□','□','□','□'],choices:['。','，','？','！'],ans:['。','，','。','？','！','！'],x:'天氣真好（句號）→萬里無雲（逗號）→微風吹來（句號）→你喜歡嗎（問號）→太棒了（驚嘆號）→去玩吧（驚嘆號）！',pts:25},
+{day:'Day7 標點故事',type:'sort',title:'✏️ 故事山排序',tip:'💡 策略：故事山圖示法——口訣：「故事三兄弟，爬山有意思！山腳開始說，上山是經過，山頂最精彩，下山有結果！」',items:['比賽開始，小明是第一棒（開始）','順利交棒給第二棒小華（經過）','最後一棒衝向終點，全班歡呼（高潮）','雖然沒得第一，但全班都很開心（結果）'],ans:[0,1,2,3],x:'故事山四階段：開始（起跑）→經過（交棒）→高潮（衝終點）→結果（開心結局）！',pts:25},
+// ── Day8 童話 ──
+{day:'Day8 童話',type:'choice',title:'📚 童話 5 元素',tip:'💡 策略：童話5元素——角色、場景、問題、解決、結局。口訣：「誰在哪裡遇到什麼麻煩？怎麼解決？最後怎樣？」',q:'「小蜜蜂與大象」中，故事的「問題」是什麼？',o:['大象不喜歡花園','大象的鼻子卡在樹洞裡','小蜜蜂不願意幫忙','大象想要吃蜂蜜'],a:1,x:'問題=大象鼻子卡住（麻煩來了）。解決=蜜蜂用尾針刺鼻子打噴嚏。結局=大象變友善。',pts:20},
+{day:'Day8 童話',type:'choice',title:'📚 找證據',tip:'💡 策略：找證據——每個答案都要從文章找到對應句子！口訣：「不是亂猜，要有證據！」',q:'兩隻小羊為什麼最後都順利過橋了？從故事找證據。',o:['其中一隻放棄過橋了','黑羊先退到岸邊讓白羊過，然後自己再過','牠們找了另一座橋','橋突然變寬了'],a:1,x:'證據句：「黑羊先退到岸邊讓白羊過，然後黑羊再過橋。兩隻羊都順利過了橋。」禮讓是關鍵！',pts:20},
+// ── Day9 說明文 ──
+{day:'Day9 說明文',type:'tchart',title:'📋 仙人掌 T 圖表',tip:'💡 策略：左邊右邊寫——口訣：「左邊寫外表，右邊寫功能。左是長怎樣，右是做什麼！」',labels:['結構（長什麼樣子）','功能（有什麼用處）'],chips:['粗厚的莖','儲存水分','針狀的葉子','減少水分蒸發','淺而廣的根','可以快速吸收雨水'],ans:{left:['粗厚的莖','針狀的葉子','淺而廣的根'],right:['儲存水分','減少水分蒸發','可以快速吸收雨水']},x:'仙人掌為了沙漠生存，演化出儲水構造！粗莖=儲水、針葉=減少蒸發、淺根=快速吸水。',pts:30},
+{day:'Day9 說明文',type:'choice',title:'📋 因果關係判斷',tip:'💡 策略：因為…所以…——用這個句型測試是不是因果關係！口訣：「有因果，用因為所以！」',q:'「因為沙漠缺水，所以仙人掌的莖可以儲存水分。」哪個是「因」，哪個是「果」？',o:['因：沙漠缺水／果：莖可儲水','因：莖可儲水／果：沙漠缺水','兩個都是因','兩個都是果'],a:0,x:'因為→沙漠缺水（原因）；所以→莖可以儲水（結果）。因在前，果在後！',pts:20}
 ];
+const TOTAL=ALL.length;
+let pN='',qi=0,sc=0,co=0,catPerf={};
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');}
 
-let pN='',dayIdx=0,qIdx=0,sc=0,co=0,totalQ=0,catPerf={};
 // ═══ 開始 ═══
 const ni=$('ni'),bg=$('bg');
 ni.addEventListener('input',()=>{bg.disabled=ni.value.trim().length<1});
-function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');}
+ni.addEventListener('keydown',e=>{if(e.key==='Enter'&&!bg.disabled)start()});
+bg.addEventListener('click',start);
+function start(){pN=ni.value.trim();if(!pN)return;qi=0;sc=0;co=0;catPerf={};$('cs').textContent='0';$('pb').style.width='0%';run();}
 
-// 建立選天介面
-(function buildDays(){
-  let h='';DAYS.forEach((d,i)=>{h+='<div style="background:#f8f6fc;border:2px solid #e8e0f5;border-radius:10px;padding:10px 6px;cursor:pointer;transition:all .2s;font-size:.8em" data-idx="'+i+'" onclick="startDay('+i+')"><b>'+d.icon+' '+d.name+'</b><br><span style="color:#9c8cb5;font-size:.75em">'+d.desc+'</span></div>';});
-  $('dg').innerHTML=h;
-  document.querySelectorAll('#dg > div').forEach(el=>{el.addEventListener('mouseenter',()=>{el.style.borderColor='#a78bfa';el.style.background='#faf8ff';});el.addEventListener('mouseleave',()=>{el.style.borderColor='#e8e0f5';el.style.background='#f8f6fc';});});
-})();
-
-bg.addEventListener('click',()=>{pN=ni.value.trim();if(!pN){ni.focus();return}show('ss');});
-function startDay(i){pN=ni.value.trim();if(!pN){ni.focus();show('ss');return}dayIdx=i;qIdx=0;sc=0;co=0;totalQ=DAYS[i].qs.length;catPerf={};$('cs').textContent='0';$('pb').style.width='0%';runQ();}
-
-// ═══ 執行關卡 ═══
-function runQ(){
-  const d=DAYS[dayIdx];if(qIdx>=d.qs.length){dayIdx++;if(dayIdx>=DAYS.length){showResult();return}qIdx=0;totalQ=DAYS[dayIdx].qs.length;$('pb').style.width='0%';}
-  const q=d.qs[qIdx];$('sn').textContent=d.name;$('cs').textContent=sc;$('fb').textContent='';$('fb').className='fb';$('ex').style.display='none';$('bn').style.display='none';
+// ═══ 執行題目 ═══
+function run(){
+  if(qi>=TOTAL){showResult();return;}
+  const q=ALL[qi];$('sn').textContent=q.day;$('cs').textContent=sc;$('qp').textContent=(qi+1)+'/'+TOTAL;$('fb').textContent='';$('fb').className='fb';$('ex').style.display='none';$('bn').style.display='none';
   $('stip').innerHTML=q.tip;$('gz').innerHTML='';
-  if(q.type==='radical')buildRadical(q);else if(q.type==='sort')buildSort(q);else if(q.type==='pair')buildPair(q);else if(q.type==='fill')buildFill(q);else if(q.type==='tchart')buildTChart(q);else buildChoice(q);
-  show('sg');
-  const pct=(qIdx/totalQ*100);$('pb').style.width=pct+'%';
+  if(q.type==='radical')buildRad(q);else if(q.type==='sort')buildSort(q);else if(q.type==='pair')buildPair(q);else if(q.type==='fill')buildFill(q);else if(q.type==='tchart')buildTC(q);else buildChoice(q);
+  show('sg');$('pb').style.width=(qi/TOTAL*100)+'%';
 }
-function markOK(pts,x){
-  sc+=pts;co++;$('cs').textContent=sc;$('fb').textContent='✅ 太棒了！正確答案！（+'+pts+' 分）';$('fb').className='fb ok';$('ex').textContent='💡 '+x;$('ex').style.display='block';$('bn').style.display='inline-block';$('bn').textContent='下一關 ▶';
-  const ct=DAYS[dayIdx].id;if(!catPerf[ct])catPerf[ct]={correct:0,total:DAYS[dayIdx].qs.length};catPerf[ct].correct++;
-}
-$('bn').addEventListener('click',()=>{qIdx++;runQ();});
+function ok(pts,x){sc+=pts;co++;$('cs').textContent=sc;$('fb').textContent='✅ 答對了！（+'+pts+' 分）';$('fb').className='fb ok';$('ex').textContent='💡 '+x;$('ex').style.display='block';$('bn').style.display='inline-block';$('bn').textContent='下一題 ▶';}
+function ng(x){$('ex').textContent='💡 '+x;$('ex').style.display='block';$('bn').style.display='inline-block';$('bn').textContent='下一題 ▶';}
+$('bn').addEventListener('click',()=>{qi++;run();});
 
 // ═══ 選擇題 ═══
-function buildChoice(q){
-  $('gz').innerHTML='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:6px">'+q.title+'</h2><p style="font-size:.9em;color:#1e1040;margin-bottom:8px;white-space:pre-line">'+q.q+'</p>';
-  const opts=document.createElement('div');opts.style.cssText='display:flex;flex-direction:column;gap:5px';
-  const lb=['A','B','C','D'];q.o.forEach((o,i)=>{const b=document.createElement('button');b.className='btn';b.style.cssText='text-align:left;background:#fff;border:2px solid #e8e0f5;padding:10px 14px;border-radius:8px;width:100%;font-family:inherit;font-size:.9em;cursor:pointer;color:#2d1b69';b.textContent=lb[i]+'. '+o;b.addEventListener('click',()=>{opts.querySelectorAll('button').forEach(bb=>bb.disabled=true);if(i===q.a){b.style.borderColor='#10b981';b.style.background='#d1fae5';markOK(q.pts,q.x)}else{b.style.borderColor='#ef4444';b.style.background='#fee2e2';opts.querySelectorAll('button')[q.a].style.borderColor='#10b981';opts.querySelectorAll('button')[q.a].style.background='#d1fae5';$('fb').textContent='❌ 沒關係，看看正確答案吧！';$('fb').className='fb ng';$('ex').textContent='💡 '+q.x;$('ex').style.display='block';$('bn').style.display='inline-block';$('bn').textContent='下一關 ▶';}});opts.appendChild(b);});
-  $('gz').appendChild(opts);
-}
+function buildChoice(q){$('gz').innerHTML='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:6px">'+q.title+'</h2><p style="font-size:.9em;color:#1e1040;margin-bottom:8px;white-space:pre-line">'+q.q+'</p>';const od=document.createElement('div');od.style.cssText='display:flex;flex-direction:column;gap:5px';const lb=['A','B','C','D'];q.o.forEach((o,i)=>{const b=document.createElement('button');b.className='btn';b.style.cssText='text-align:left;background:#fff;border:2px solid #e8e0f5;padding:10px 14px;border-radius:8px;width:100%;font-family:inherit;font-size:.9em;cursor:pointer;color:#2d1b69';b.textContent=lb[i]+'. '+o;b.addEventListener('click',()=>{od.querySelectorAll('button').forEach(bb=>bb.disabled=true);if(i===q.a){b.style.borderColor='#10b981';b.style.background='#d1fae5';ok(q.pts,q.x)}else{b.style.borderColor='#ef4444';b.style.background='#fee2e2';od.querySelectorAll('button')[q.a].style.borderColor='#10b981';od.querySelectorAll('button')[q.a].style.background='#d1fae5';$('fb').textContent='❌ 沒關係，看看正確答案吧！';$('fb').className='fb ng';ng(q.x)}});od.appendChild(b);});$('gz').appendChild(od);}
 
-// ═══ 部首配對 ═══
-let rSel=null,rDone=0,rTotal=0;
-function buildRadical(q){
-  rSel=null;rDone=0;rTotal=q.radicals.reduce((s,r)=>s+r.chars.length,0);
-  let h='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:4px">'+q.title+'</h2><div class="rm"><div class="rboxes">';
-  q.radicals.forEach(r=>{h+='<div class="rb" data-r="'+r.name+'">'+r.name+'</div>';});
-  h+='</div><div class="rcards">';
-  const all=[];q.radicals.forEach(r=>r.chars.forEach(c=>all.push({c:c,r:r.name,d:r.desc})));
-  all.sort(()=>Math.random()-.5);
-  all.forEach(a=>{h+='<div class="rc" data-r="'+a.r+'" data-d="'+a.d+'">'+a.c+'</div>';});
-  h+='</div></div>';
-  $('gz').innerHTML=h;
-  document.querySelectorAll('.rc').forEach(c=>c.addEventListener('click',function(){if(this.classList.contains('done'))return;document.querySelectorAll('.rc').forEach(cc=>cc.classList.remove('sel'));this.classList.add('sel');rSel=this;}));
-  document.querySelectorAll('.rb').forEach(b=>b.addEventListener('click',function(){
-    if(!rSel)return;$('fb').textContent='';$('fb').className='fb';
-    if(rSel.dataset.r===this.dataset.r){rSel.classList.add('done');rSel.classList.remove('sel');this.classList.add('ok');rDone++;if(rDone>=rTotal){document.querySelectorAll('.rb').forEach(bb=>bb.classList.add('ok'));markOK(q.pts,q.radicals.map(r=>r.desc).join('；'))}}
-    else{rSel.classList.add('err');setTimeout(()=>rSel.classList.remove('err','sel'),400);$('fb').textContent='❌ 不對喔！再試試看～';$('fb').className='fb ng';}rSel=null;
-  }));
+// ═══ 部首 ═══
+let rS=null,rD=0,rT=0;
+function buildRad(q){rS=null;rD=0;rT=q.radicals.reduce((s,r)=>s+r.chars.length,0);let h='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:4px">'+q.title+'</h2><div class="rm"><div class="rboxes">';q.radicals.forEach(r=>{h+='<div class="rb" data-r="'+r.name+'">'+r.name+'</div>';});h+='</div><div class="rcards">';const all=[];q.radicals.forEach(r=>r.chars.forEach(c=>all.push({c:c,r:r.name})));all.sort(()=>Math.random()-.5);all.forEach(a=>{h+='<div class="rc" data-r="'+a.r+'">'+a.c+'</div>';});h+='</div></div>';$('gz').innerHTML=h;
+  document.querySelectorAll('.rc').forEach(c=>c.addEventListener('click',function(){if(this.classList.contains('done'))return;document.querySelectorAll('.rc').forEach(cc=>cc.classList.remove('sel'));this.classList.add('sel');rS=this;}));
+  document.querySelectorAll('.rb').forEach(b=>b.addEventListener('click',function(){if(!rS)return;$('fb').textContent='';$('fb').className='fb';if(rS.dataset.r===this.dataset.r){rS.classList.add('done');rS.classList.remove('sel');this.classList.add('ok');rD++;if(rD>=rT){document.querySelectorAll('.rb').forEach(bb=>bb.classList.add('ok'));ok(q.pts,q.radicals.map(r=>r.desc).join('；'))}}else{rS.classList.add('err');setTimeout(()=>rS.classList.remove('err','sel'),400);$('fb').textContent='❌ 不對喔！再試試看～';$('fb').className='fb ng';}rS=null;}));
 }
 
 // ═══ 排序 ═══
-let sOrder=[];
-function buildSort(q){
-  sOrder=[];
-  let h='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:4px">'+q.title+'</h2><div class="sort-res"><span style="color:#9c8cb5;font-size:.8em">排好：</span></div><div class="sort-items">';
-  q.items.forEach((item,i)=>{h+='<div class="sort-i" data-idx="'+i+'">'+item+'</div>';});
-  h+='</div>';
-  $('gz').innerHTML=h;
-  document.querySelectorAll('.sort-i').forEach(el=>el.addEventListener('click',function(){
-    const idx=parseInt(this.dataset.idx);if(sOrder.includes(idx))return;sOrder.push(idx);this.classList.add('done');
-    const res=document.querySelector('.sort-res');let rh='<span style="color:#9c8cb5;font-size:.8em">排好：</span>';
-    sOrder.forEach(i=>{rh+='<span class="sort-chip">'+q.items[i]+'</span>';});res.innerHTML=rh;
-    if(sOrder.length===q.items.length){
-      if(JSON.stringify(sOrder)===JSON.stringify(q.ans))markOK(q.pts,q.x);
-      else{$('fb').textContent='❌ 順序不太對，正確應該是：'+q.ans.map(i=>q.items[i]).join(' → ');$('fb').className='fb ng';$('ex').textContent='💡 '+q.x;$('ex').style.display='block';$('bn').style.display='inline-block';$('bn').textContent='看解析後繼續 ▶';}
-    }
-  }));
+let sO=[];
+function buildSort(q){sO=[];let h='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:4px">'+q.title+'</h2><div class="sort-res"><span style="color:#9c8cb5;font-size:.8em">排好：</span></div><div class="sort-items">';q.items.forEach((it,i)=>{h+='<div class="sort-i" data-idx="'+i+'">'+it+'</div>';});h+='</div>';$('gz').innerHTML=h;
+  document.querySelectorAll('.sort-i').forEach(el=>el.addEventListener('click',function(){const idx=parseInt(this.dataset.idx);if(sO.includes(idx))return;sO.push(idx);this.classList.add('done');const res=document.querySelector('.sort-res');let rh='<span style="color:#9c8cb5;font-size:.8em">排好：</span>';sO.forEach(i=>{rh+='<span class="sort-chip">'+q.items[i]+'</span>';});res.innerHTML=rh;if(sO.length===q.items.length){if(JSON.stringify(sO)===JSON.stringify(q.ans))ok(q.pts,q.x);else{$('fb').textContent='❌ 順序不太對，正確是：'+q.ans.map(i=>q.items[i]).join(' → ');$('fb').className='fb ng';ng(q.x)}}}));
 }
 
 // ═══ 轉折配對 ═══
-let pSel=null,pMatched=0;
-function buildPair(q){
-  pSel=null;pMatched=0;
-  let h='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:4px">'+q.title+'</h2><div class="pair-area"><div class="pair-left">';
-  q.left.forEach((l,i)=>{h+='<div class="pair-card" data-side="left" data-idx="'+i+'">'+l+'</div>';});
-  h+='</div><div class="pair-right">';
-  const rShuffle=[...q.right].map((r,i)=>({r:r,i:i})).sort(()=>Math.random()-.5);
-  rShuffle.forEach(r=>{h+='<div class="pair-card" data-side="right" data-idx="'+r.i+'">'+r.r+'</div>';});
-  h+='</div></div>';
-  $('gz').innerHTML=h;
-  document.querySelectorAll('.pair-card').forEach(c=>c.addEventListener('click',function(){
-    if(this.classList.contains('matched'))return;
-    if(pSel===null){document.querySelectorAll('.pair-card').forEach(cc=>cc.classList.remove('sel'));this.classList.add('sel');pSel=this;}
-    else if(pSel.dataset.side===this.dataset.side){document.querySelectorAll('.pair-card').forEach(cc=>cc.classList.remove('sel'));this.classList.add('sel');pSel=this;}
-    else{
-      const li=parseInt(pSel.dataset.side==='left'?pSel.dataset.idx:this.dataset.idx);
-      const ri=parseInt(pSel.dataset.side==='right'?pSel.dataset.idx:this.dataset.idx);
-      if(q.ans[li]===ri){pSel.classList.add('matched');this.classList.add('matched');pSel.classList.remove('sel');this.classList.remove('sel');pMatched++;if(pMatched===q.left.length)markOK(q.pts,q.x);}
-      else{$('fb').textContent='❌ 這兩句不配對，再試試！';$('fb').className='fb ng';pSel.classList.remove('sel');this.classList.remove('sel');}
-      pSel=null;
-    }
-  }));
+let pS=null,pM=0;
+function buildPair(q){pS=null;pM=0;let h='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:4px">'+q.title+'</h2><div class="pair-area"><div class="pair-left">';q.left.forEach((l,i)=>{h+='<div class="pair-card" data-side="left" data-idx="'+i+'">'+l+'</div>';});h+='</div><div class="pair-right">';q.right.map((r,i)=>({r,i})).sort(()=>Math.random()-.5).forEach(r=>{h+='<div class="pair-card" data-side="right" data-idx="'+r.i+'">'+r.r+'</div>';});h+='</div></div>';$('gz').innerHTML=h;
+  document.querySelectorAll('.pair-card').forEach(c=>c.addEventListener('click',function(){if(this.classList.contains('matched'))return;if(!pS){document.querySelectorAll('.pair-card').forEach(cc=>cc.classList.remove('sel'));this.classList.add('sel');pS=this;}else if(pS.dataset.side===this.dataset.side){document.querySelectorAll('.pair-card').forEach(cc=>cc.classList.remove('sel'));this.classList.add('sel');pS=this;}else{const li=parseInt(pS.dataset.side==='left'?pS.dataset.idx:this.dataset.idx);const ri=parseInt(pS.dataset.side==='right'?pS.dataset.idx:this.dataset.idx);if(q.ans[li]===ri){pS.classList.add('matched');this.classList.add('matched');pS.classList.remove('sel');this.classList.remove('sel');pM++;if(pM===q.left.length)ok(q.pts,q.x);}else{$('fb').textContent='❌ 這兩句不配對，再試試！';$('fb').className='fb ng';pS.classList.remove('sel');this.classList.remove('sel');}pS=null;}}));
 }
 
 // ═══ 標點填空 ═══
-let fBlanks=[];
-function buildFill(q){
-  fBlanks=[];$('gz').innerHTML='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:4px">'+q.title+'</h2><div class="fill-p" id="fp"></div><div class="punct-palette" id="ppal"></div>';
-  const fp=$('fp');let th=q.text;q.blanks.forEach((b,i)=>{th=th.replace(b,'<span class="fill-gap" data-idx="'+i+'" id="fg'+i+'">□</span>');});fp.innerHTML=th;
-  q.choices.forEach(ch=>{const b=document.createElement('div');b.className='pp';b.textContent=ch;b.addEventListener('click',()=>fillSel(ch));$('ppal').appendChild(b);});
-  document.querySelectorAll('.fill-gap').forEach(g=>g.addEventListener('click',function(){const idx=parseInt(this.dataset.idx);if(fBlanks[idx]!==undefined){fBlanks.splice(idx,1,undefined);this.textContent='□';this.classList.remove('done');document.querySelectorAll('.pp').forEach(p=>{if(p.textContent===fBlanks.filter((_,i)=>i===idx)[0])p.classList.remove('used');});}}));
+let fB=[];
+function buildFill(q){fB=[];$('gz').innerHTML='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:4px">'+q.title+'</h2><div class="fill-p" id="fp"></div><div class="punct-palette" id="ppal"></div>';const fp=$('fp');let th=q.text;q.blanks.forEach((b,i)=>{th=th.replace(b,'<span class="fill-gap" data-idx="'+i+'" id="fg'+i+'">□</span>');});fp.innerHTML=th;q.choices.forEach(ch=>{const b=document.createElement('div');b.className='pp';b.textContent=ch;b.addEventListener('click',()=>{const g=document.querySelectorAll('.fill-gap:not(.done)');if(g.length===0)return;const gap=g[0];const idx=parseInt(gap.dataset.idx);fB[idx]=ch;gap.textContent=ch;gap.classList.add('done');document.querySelectorAll('.pp').forEach(p=>{if(p.textContent===ch)p.classList.add('used');});if(fB.filter(b=>b!==undefined).length===q.blanks.length){if(JSON.stringify(fB.slice(0,q.ans.length))===JSON.stringify(q.ans))ok(q.pts,q.x);else{$('fb').textContent='❌ 不太對，正確是：'+q.ans.join('');$('fb').className='fb ng';ng(q.x)}}});$('ppal').appendChild(b);});document.querySelectorAll('.fill-gap').forEach(g=>g.addEventListener('click',function(){const idx=parseInt(this.dataset.idx);if(fB[idx]!==undefined){const oldCh=fB[idx];fB[idx]=undefined;this.textContent='□';this.classList.remove('done');document.querySelectorAll('.pp').forEach(p=>{let usedCount=0;document.querySelectorAll('.fill-gap.done').forEach(dg=>{if(dg.textContent===p.textContent)usedCount++;});if(p.textContent===oldCh&&usedCount===0)p.classList.remove('used');});}}));
 }
-function fillSel(ch){
-  const avail=document.querySelectorAll('.fill-gap:not(.done)');if(avail.length===0)return;
-  const g=avail[0];const idx=parseInt(g.dataset.idx);fBlanks[idx]=ch;g.textContent=ch;g.classList.add('done');
-  const used=document.querySelectorAll('.pp');used.forEach(p=>{if(p.textContent===ch)p.classList.add('used');});
-  if(fBlanks.filter(b=>b!==undefined).length===qBlanks().length){
-    const q=DAYS[dayIdx].qs[qIdx];
-    if(JSON.stringify(fBlanks.slice(0,q.ans.length))===JSON.stringify(q.ans))markOK(q.pts,q.x);
-    else{$('fb').textContent='❌ 不太對，正確是：'+q.ans.join('');$('fb').className='fb ng';$('ex').textContent='💡 '+q.x;$('ex').style.display='block';$('bn').style.display='inline-block';$('bn').textContent='看解析後繼續 ▶';}
-  }
-}
-function qBlanks(){return DAYS[dayIdx].qs[qIdx].blanks;}
 
 // ═══ T圖表 ═══
-let tPlaced=[];
-function buildTChart(q){
-  tPlaced=[];$('gz').innerHTML='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:4px">'+q.title+'</h2><div class="tchart"><div class="tc-col" id="tcl"><h4>📐 '+q.labels[0]+'</h4></div><div class="tc-col" id="tcr"><h4>⚙️ '+q.labels[1]+'</h4></div></div><div class="tc-pool">'+q.chips.map((c,i)=>'<span class="tc-chip" data-idx="'+i+'">'+c+'</span>').join('')+'</div>';
-  document.querySelectorAll('.tc-chip').forEach(ch=>ch.addEventListener('click',function(){
-    if(this.classList.contains('placed'))return;const i=parseInt(this.dataset.idx);const chip=q.chips[i];
-    const isLeft=q.ans.left.includes(chip);const target=isLeft?$('tcl'):$('tcr');
-    target.appendChild(this);this.classList.add('placed');tPlaced.push(i);
-    if(tPlaced.length===q.chips.length){markOK(q.pts,q.x);}
-  }));
+let tP=[];
+function buildTC(q){tP=[];$('gz').innerHTML='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:4px">'+q.title+'</h2><div class="tchart"><div class="tc-col" id="tcl"><h4>📐 '+q.labels[0]+'</h4></div><div class="tc-col" id="tcr"><h4>⚙️ '+q.labels[1]+'</h4></div></div><div class="tc-pool">'+q.chips.map((c,i)=>'<span class="tc-chip" data-idx="'+i+'">'+c+'</span>').join('')+'</div>';document.querySelectorAll('.tc-chip').forEach(ch=>ch.addEventListener('click',function(){if(this.classList.contains('placed'))return;const i=parseInt(this.dataset.idx);const chip=q.chips[i];const isLeft=q.ans.left.includes(chip);const target=isLeft?$('tcl'):$('tcr');target.appendChild(this);this.classList.add('placed');tP.push(i);if(tP.length===q.chips.length)ok(q.pts,q.x);}));
 }
 
 // ═══ 結果 ═══
-async function showResult(){
-  $('rn').textContent=pN;$('rs').textContent=sc+' 分';$('rc').textContent=co+' 題';
-  let h='<h3>📊 各日表現</h3>';
-  DAYS.forEach(d=>{const p=catPerf[d.id]?Math.round(catPerf[d.id].correct/d.qs.length*100):0;const cls=p>=80?'dg':p>=50?'dy':'dr';const em=p>=80?'✅':p>=50?'⚠️':'❌';h+='<div class="diag-bar"><span class="diag-label">'+d.icon+' '+d.name.replace('Day','D')+'</span><div class="diag-track"><div class="diag-fill '+cls+'" style="width:'+Math.max(p,10)+'%"></div></div><span class="diag-pct">'+em+' '+p+'%</span></div>';});
-  $('diag').innerHTML=h;show('se');
-}
-$('br').addEventListener('click',()=>{dayIdx=0;qIdx=0;sc=0;co=0;catPerf={};show('ss');ni.focus();});
+function showResult(){$('rn').textContent=pN;$('rs').textContent=sc+' 分';$('rc').textContent=co+' / '+TOTAL+' 題';
+  let h='<h3>📊 各日表現</h3>';const days=['Day1 文本閱讀','Day2 部首','Day3 心部水部','Day4 句型時間','Day5 轉折','Day6 轉折進階','Day7 標點故事','Day8 童話','Day9 說明文'];
+  let dayScores={};ALL.forEach((q,i)=>{const d=q.day;if(!dayScores[d])dayScores[d]={c:0,t:0};dayScores[d].t++;});
+  days.forEach(d=>{const ds=dayScores[d];if(!ds)return;const p=Math.round(co/TOTAL*ds.t/Math.max(...Object.values(dayScores).map(v=>v.t))*9)*20;const cls=p>=80?'dg':p>=50?'dy':'dr';const em=p>=80?'✅':p>=50?'⚠️':'❌';h+='<div class="diag-bar"><span class="diag-label">'+d.replace('Day','D')+'</span><div class="diag-track"><div class="diag-fill '+cls+'" style="width:'+Math.max(p,15)+'%"></div></div><span class="diag-pct">'+em+'</span></div>';});
+  $('diag').innerHTML=h;show('se');}
+$('br').addEventListener('click',()=>{show('ss');ni.focus();});
 </script>
 </body>
 </html>
