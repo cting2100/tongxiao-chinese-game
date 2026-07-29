@@ -3,41 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>銅小四年級國語補救教學 — 每日闖關遊戲</title>
+<title>銅小四年級國語補救教學 — 總複習挑戰</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{
   font-family:'Microsoft JhengHei','PingFang TC','Noto Sans TC',sans-serif;
   background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
-  min-height:100vh;display:flex;align-items:center;justify-content:center;overflow-x:hidden;
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
 }
-.bg-stars{position:fixed;inset:0;pointer-events:none;z-index:0}
-.bg-stars span{position:absolute;background:#fff;border-radius:50%;animation:twinkle 3s infinite}
-@keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}
+.container{
+  position:relative;z-index:1;width:95vw;max-width:750px;
+  background:rgba(255,255,255,.93);border-radius:24px;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);padding:28px 24px;text-align:center;
+}
 
-.container{position:relative;z-index:1;width:95vw;max-width:750px;min-height:460px;
-  background:rgba(255,255,255,.93);border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.4);
-  padding:28px 24px;text-align:center;transition:all .4s}
-
-.screen{display:none}
-.screen.active{display:block;animation:fadeIn .4s}
+/* 畫面 */
+.scr{display:none}.scr.on{display:block;animation:fadeIn .4s}
 @keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
 h1{font-size:1.8em;color:#2d1b69;margin-bottom:6px}
 h2{font-size:1.3em;color:#5b3a8c;margin-bottom:12px}
 .sub{color:#7c6ba0;font-size:.9em;margin-bottom:10px}
 
-/* 開始畫面 */
-.hero{font-size:4em;margin:8px 0}
-.desc{background:#f3effa;border-radius:14px;padding:14px;margin:12px 0;text-align:left;font-size:.9em;color:#4a3b6b;line-height:1.7}
+.desc{
+  background:#f3effa;border-radius:14px;padding:14px;margin:12px 0;
+  text-align:left;font-size:.9em;color:#4a3b6b;line-height:1.8
+}
 .desc b{color:#6d28d9}
 
-.inp-group{margin:16px 0}
-.inp-group label{display:block;font-size:1em;color:#2d1b69;font-weight:bold;margin-bottom:6px}
-.inp-group input{width:100%;max-width:320px;padding:12px 18px;border:3px solid #d4c8f0;border-radius:12px;font-size:1.1em;text-align:center;outline:none;transition:border .3s}
-.inp-group input:focus{border-color:#7c5ce7}
+.inp{margin:16px 0}
+.inp label{display:block;font-size:1em;color:#2d1b69;font-weight:bold;margin-bottom:6px}
+.inp input{
+  width:100%;max-width:320px;padding:12px 18px;border:3px solid #d4c8f0;
+  border-radius:12px;font-size:1.1em;text-align:center;outline:none;transition:border .3s
+}
+.inp input:focus{border-color:#7c5ce7}
 
-.btn{display:inline-block;padding:12px 32px;border:none;border-radius:12px;font-size:1.1em;font-weight:bold;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn{
+  display:inline-block;padding:12px 32px;border:none;border-radius:12px;
+  font-size:1.1em;font-weight:bold;cursor:pointer;transition:all .2s;font-family:inherit
+}
 .btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.12)}
 .btn:active{transform:translateY(0)}
 .btn-pri{background:linear-gradient(135deg,#7c5ce7,#a855f7);color:#fff}
@@ -45,26 +50,13 @@ h2{font-size:1.3em;color:#5b3a8c;margin-bottom:12px}
 .btn-war{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff}
 .btn-lg{padding:14px 44px;font-size:1.3em}
 .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
-.btn-sm{padding:8px 20px;font-size:.9em}
-
-/* 選天畫面 */
-.day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin:16px 0}
-.day-card{
-  background:#f8f6fc;border:2px solid #e8e0f5;border-radius:14px;
-  padding:18px 10px;cursor:pointer;transition:all .2s;text-align:center
-}
-.day-card:hover{border-color:#a78bfa;background:#faf8ff;transform:translateY(-3px);box-shadow:0 4px 12px rgba(124,92,231,.15)}
-.day-card .day-icon{font-size:2em;display:block;margin-bottom:4px}
-.day-card .day-label{font-size:.85em;color:#5b3a8c;font-weight:bold}
-.day-card .day-desc{font-size:.7em;color:#9c8cb5;margin-top:2px}
-.day-card.final{background:#fff7ed;border-color:#fbbf24}
 
 /* 遊戲中 */
 .game-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px}
-.badge{color:#fff;padding:5px 14px;border-radius:20px;font-size:.85em;font-weight:bold}
-.badge-stage{background:linear-gradient(135deg,#7c5ce7,#a855f7)}
+.badge{padding:5px 14px;border-radius:20px;font-size:.85em;font-weight:bold}
+.badge-stage{background:linear-gradient(135deg,#7c5ce7,#a855f7);color:#fff}
 .badge-score{background:#f3effa;color:#5b3a8c}
-.badge-time{background:#f3effa;color:#5b3a8c;font-weight:bold}
+.badge-time{background:#f3effa;color:#5b3a8c}
 .badge-time.warn{background:#fef3c7;color:#d97706}
 .badge-time.danger{background:#fee2e2;color:#dc2626;animation:pulse .5s infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
@@ -86,8 +78,7 @@ h2{font-size:1.3em;color:#5b3a8c;margin-bottom:12px}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 
 .fb{font-size:1.1em;font-weight:bold;margin:10px 0;min-height:28px}
-.fb.ok{color:#059669}
-.fb.ng{color:#dc2626}
+.fb.ok{color:#059669}.fb.ng{color:#dc2626}
 
 /* 結果 */
 .stats{margin:14px auto;max-width:420px}
@@ -106,56 +97,44 @@ h2{font-size:1.3em;color:#5b3a8c;margin-bottom:12px}
 .lb{margin:12px auto;max-width:500px;text-align:left}
 .lb h3{color:#5b3a8c;margin-bottom:6px}
 .lb-item{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;background:#f8f6fc;border-radius:8px;margin:3px 0;font-size:.9em}
-.lb-rank{font-size:1.1em;width:30px}
 .lb-name{flex:1;color:#2d1b69;font-weight:bold;padding:0 8px}
 .lb-score{color:#7c5ce7;font-weight:bold}
-.lb-type{color:#9c8cb5;font-size:.75em;margin-left:4px}
 
 @media(max-width:480px){
   .container{padding:18px 12px}
   h1{font-size:1.3em}
   .q-text{font-size:1.05em;padding:12px}
   .opt{font-size:.95em;padding:10px 14px}
-  .day-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px}
 }
 </style>
 </head>
 <body>
 
-<div class="bg-stars" id="stars"></div>
-
 <div class="container">
 
-<!-- ===== 1. 開始畫面 ===== -->
-<div class="screen active" id="scrStart">
-  <div class="hero">🏫</div>
-  <h1>銅小四年級國語補救教學</h1>
-  <h2>每日闖關遊戲</h2>
+<!-- 開始畫面 -->
+<div class="scr on" id="scrStart">
+  <div style="font-size:4em;margin:8px 0">🏆</div>
+  <h1>國語補救教學總複習</h1>
+  <h2>25 題綜合挑戰（110-114 學力檢測題型）</h2>
   <div class="desc">
     <p><b>遊戲說明：</b></p>
-    <p>• 共 10 天關卡 + 1 場總複習，依照每日上課進度設計</p>
-    <p>• 每題 30 秒限時，答對每題最高可得 25 分</p>
-    <p>• 題目來自 110-114 年學力檢測題型</p>
+    <p>• 每題 <b>30 秒</b>限時，答對一題最高可得 25 分（滿分 625 分）</p>
+    <p>• 涵蓋：讀音、形近字、句型、轉折詞、標點、修辭、閱讀理解</p>
+    <p>• 題目參考 110-114 年縣市學力檢測四年級國語科</p>
   </div>
-  <div class="inp-group">
+  <div class="inp">
     <label for="nameInp">請輸入你的名字：</label>
     <input type="text" id="nameInp" placeholder="例如：小明" maxlength="20" autocomplete="off">
   </div>
-  <button class="btn btn-pri btn-lg" id="btnGo" disabled>選擇關卡 ▶</button>
+  <button class="btn btn-pri btn-lg" id="btnGo" disabled>開始挑戰 ▶</button>
+  <p style="color:#9c8cb5;font-size:.8em;margin-top:6px">輸入名字後即可開始</p>
 </div>
 
-<!-- ===== 2. 選天畫面 ===== -->
-<div class="screen" id="scrMenu">
-  <h1>選擇挑戰關卡</h1>
-  <p class="sub" id="menuPlayer"></p>
-  <div class="day-grid" id="dayGrid"></div>
-  <button class="btn btn-war btn-sm" id="btnBack" style="margin-top:10px">← 換名字</button>
-</div>
-
-<!-- ===== 3. 遊戲中 ===== -->
-<div class="screen" id="scrGame">
+<!-- 遊戲中 -->
+<div class="scr" id="scrGame">
   <div class="game-top">
-    <span class="badge badge-stage" id="stageName"></span>
+    <span class="badge badge-stage">總複習挑戰</span>
     <span class="badge badge-score">⭐ <span id="curScore">0</span> 分</span>
     <span class="badge badge-time" id="timeBadge">⏱ <span id="timeDisp">30</span>s</span>
   </div>
@@ -165,166 +144,57 @@ h2{font-size:1.3em;color:#5b3a8c;margin-bottom:12px}
     <div class="opts" id="optsBox"></div>
     <div class="fb" id="fb"></div>
   </div>
-  <button class="btn btn-pri" id="btnNextQ" style="display:none">下一題 ▶</button>
+  <button class="btn btn-pri" id="btnNext" style="display:none">下一題 ▶</button>
 </div>
 
-<!-- ===== 4. 結果畫面 ===== -->
-<div class="screen" id="scrResult">
-  <div style="font-size:4em;margin:6px 0" id="resIcon"></div>
-  <h1 id="resTitle"></h1>
+<!-- 結果 -->
+<div class="scr" id="scrResult">
+  <div style="font-size:4em;margin:6px 0">🏅</div>
+  <h1>挑戰完成！</h1>
   <div id="resRank"></div>
   <div class="stats">
     <div class="stat-row"><span class="stat-l">玩家</span><span class="stat-v" id="resName"></span></div>
-    <div class="stat-row"><span class="stat-l">關卡</span><span class="stat-v" id="resGame"></span></div>
-    <div class="stat-row"><span class="stat-l">得分</span><span class="stat-v" id="resScore"></span></div>
+    <div class="stat-row"><span class="stat-l">總分</span><span class="stat-v" id="resScore"></span></div>
     <div class="stat-row"><span class="stat-l">答對</span><span class="stat-v" id="resCorrect"></span></div>
     <div class="stat-row"><span class="stat-l">時間</span><span class="stat-v" id="resTime"></span></div>
   </div>
-  <div class="saving" id="savingStat"></div>
+  <div class="saving" id="savingStat">正在儲存...</div>
   <div class="lb" id="lbBox"></div>
-  <button class="btn btn-pri btn-lg" id="btnMenu" style="margin-top:12px">選其他關卡 ▶</button>
+  <button class="btn btn-war btn-lg" id="btnRetry" style="margin-top:12px">再玩一次 🔄</button>
 </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="this.onerror=null;this.src='https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js'"></script>
 <script>
-// ═══════════════ Supabase ═══════════════
+// ═══════════ Supabase ═══════════
 const SUPABASE_URL='https://kkqsqlwlxeffdoondlcj.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrcXNxbHdseGVmZmRvb25kbGNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMTkxOTIsImV4cCI6MjEwMDc5NTE5Mn0.ZT1tD-UrCPtfkcTYt3UytTiXi_J2fyqzW1Wbh76NkwI';
 let sb=null;
-try{
-  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-}catch(e){
-  console.warn('Supabase 未載入，遊戲仍可進行但無法儲存成績');
-}
+try{sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);}catch(e){console.warn('Supabase unavailable');}
 
-// ═══════════════ 題庫（依 110-114 學力檢測題型設計）═══════════════
-const Qs={
-day1:{name:'Day1 文本閱讀初體驗',icon:'📖',desc:'讀音辨析／詞語解釋／時間詞',
-  qs:[
-{q:'下列哪一個選項「」中字的讀音相同？',opts:['「輪」番上陣／天「倫」之樂','一「波」三折／「坡」度陡峭','「推」銷員／廢紙「堆」積如山','「偏」遠地區／漫山「遍」野'],ans:1},
-{q:'「從前，小烏龜很膽小，什麼都不敢做。」句中「從前」可換成哪個詞？',opts:['後來','以前','然後','最後'],ans:1},
-{q:'下列哪一個詞語的意思和「鼓起勇氣」最接近？',opts:['垂頭喪氣','心驚膽戰','勇往直前','莫名其妙'],ans:2},
-{q:'「颱風天」一文中，「下午風雨更大了，還停電了！」這句話主要在說什麼？',opts:['颱風已經離開了','風雨變大且停電','一家人去超市買東西','隔天早上天氣放晴了'],ans:1},
-{q:'「昨天晚上」屬於哪一種時間詞？',opts:['絕對時間（如：下午三點）','相對時間（如：昨天）','順序詞（如：首先）','不是時間詞'],ans:1},
-{q:'下列哪一個選項「」中的字意思不同？',opts:['「勇」敢／「勇」氣十足','膽「小」／「小」心謹慎','「慢」慢爬／「慢」吞吞','開「心」極了／關「心」別人'],ans:3}
-]},
-day2:{name:'Day2 部首大搜查線',icon:'🔍',desc:'形近字／字形辨正／部首',
-  qs:[
-{q:'下列哪一組「」中的字形是正確的？',opts:['名勝古「積」／堆「積」如山','拋在「腦」後／自尋煩「惱」','「檢」查作業／「檢」舉違規','「籃」球比賽／「籃」天白雲'],ans:2},
-{q:'每到假日景點湧入人潮，堆「積」如山的垃圾卻讓清潔人員苦不堪言。空格應填入？',opts:['古蹟的蹟／堆積的積','堆積的積／古蹟的蹟','兩個都是蹟','兩個都是積'],ans:0},
-{q:'下列選項「」中的國字讀音相同的是？',opts:['色彩「繽」紛／歡迎貴「賓」','貓咪模樣令人「憐」惜／隔壁來了新「鄰」居','「偏」遠地區居民常缺乏物資／山坡上開著漫山「遍」野的花','這段旅程讓我們「刻」骨銘心／每一個人都應「該」愛護環境'],ans:1},
-{q:'風一吹來，稻田裡掀起了陣陣「 」色波浪，讓我忍不住拿手機記「 」下來。依序填入？',opts:['緣／錄','綠／碌','緣／碌','綠／錄'],ans:3},
-{q:'下列哪一個選項「」中的讀音與其他三者不同？',opts:['自不「量」力','肺活「量」','商「量」討論','膽「量」很大'],ans:2},
-{q:'「天氣很熱，我想吃冰。」句中「熱」字的部首「灬」跟什麼有關？',opts:['水','火','心','口'],ans:1},
-{q:'下列選項中哪個詞語是由「形容詞＋名詞」組成？（例：晴朗的陽光）',opts:['慢慢的搓揉','廣闊的海洋','遊山玩水','回心轉意'],ans:1}
-]},
-day3:{name:'Day3 心部水部與句型',icon:'💧',desc:'多音字／句型辨識／詞語結構',
-  qs:[
-{q:'下列哪一個選項「」內的讀音與其他三個不同？',opts:['名校「傳」記','民間「傳」說','羽球「傳」奇','謠「傳」滿天'],ans:3},
-{q:'「哥哥雖然已經很累了，但是為了明天的考試，他還是努力複習。」這是什麼句型？',opts:['轉折句','條件句','假設句','並列句'],ans:0},
-{q:'下列哪一個選項是「恍然大悟」的意思？',opts:['頭昏後才明白','忽然完全明白','早就已經明白','心裡好像明白'],ans:1},
-{q:'下列哪一個選項的詞語組成方式與「快樂的生活」不同？',opts:['陡峭的山坡','驚悚的鬼屋','非常的難過','美麗的花園'],ans:2},
-{q:'媽媽給了姐姐一個「溫暖的擁抱」。「溫暖的擁抱」由什麼組成？',opts:['副詞＋動詞','形容詞＋名詞','動詞＋名詞','名詞＋名詞'],ans:1},
-{q:'「只有每天注意飲食，並且持之以恆的運動，才能擁有健康的身體。」這是什麼句型？',opts:['轉折句','條件句','因果句','並列句'],ans:1},
-{q:'下列哪個「」中的字和心情有關？',opts:['「海」洋廣闊','「想」念家人','「洗」手吃飯','「燈」光明亮'],ans:1}
-]},
-day4:{name:'Day4 句型結構與時間',icon:'⏰',desc:'句子修正／時間詞／句型',
-  qs:[
-{q:'氣象預報說今天降雨機率百分之百，因此我「肯定」今天「可能」會下雨。哪個詞刪除後句子更通順？',opts:['預報','因此','肯定','可能'],ans:2},
-{q:'「首先→接著→然後→____」，正確順序的最後一個詞是？',opts:['但是','最後','所以','首先'],ans:1},
-{q:'下列哪一個段落組成方式屬於「時間式」結構？',opts:['家中擺設→庭院風景→街道景色','早上搭車→午餐前參觀→下午闖關','糖廠大門→糖廠廣場→糖廠辦公室','校外教學原因→過程→感想'],ans:1},
-{q:'「即將有颱風侵襲臺灣，氣象局提醒民眾『務必』『一定』做好防颱準備。」應刪除哪個詞？',opts:['即將','臺灣','務必','一定'],ans:3},
-{q:'「妹妹一邊騎腳踏車，一邊哼歌。」這是什麼句型？',opts:['轉折句','因果句','並列句','條件句'],ans:2},
-{q:'下列哪一個選項使用「因果句型」？',opts:['爸爸的車在路上拋錨，所以上班遲到了','如果你上課專心聽講，就會寫這份作業了','起先我用鉛筆畫線條，再來用水彩上色','這次戶外教學，讓我既興奮又期待'],ans:0},
-{q:'哪個文章結構是按照時間先後順序來安排的？',opts:['空間式（如介紹房間擺設）','時間式（如早上到下午的經歷）','因果式（如塑膠造成海洋汙染）','對比式'],ans:1}
-]},
-day5:{name:'Day5 時間順序與轉折',icon:'🔄',desc:'轉折詞／因果關係／時間詞',
-  qs:[
-{q:'「雖然外面陰雨綿綿，但妹妹仍堅持去海洋樂園玩。」句中哪個詞是轉折詞？',opts:['雖然','但','去','玩'],ans:1},
-{q:'「____下雨了，我____帶雨傘。」空格應填入？',opts:['雖然／但是','因為／所以','不但／而且','只有／才能'],ans:1},
-{q:'下列哪個選項有「轉折」關係？',opts:['除了考試前多複習，平時還要多練習考卷','雖然陰雨綿綿，但妹妹仍要去海洋樂園玩','如果爸爸多做家事，就能分擔媽媽的負擔','因為大家合作無間，所以贏得拔河比賽冠軍'],ans:1},
-{q:'下列哪一個選項是時間順序詞？',opts:['但是','雖然','首先','因為'],ans:2},
-{q:'「到餐廳用餐時，弟弟『不但』沒有『認真』專心吃飯，『還』一直看著窗外。」哪個詞刪除後句子更通順？',opts:['不但','認真','還','一直'],ans:1},
-{q:'下列哪一個句子沒有轉折詞？',opts:['雖然下雨，但我還是出門','因為下雨，所以我帶雨傘','他個子小，但是力氣大','這道菜很簡單，卻很好吃'],ans:1},
-{q:'哪個詞語可以用來描述事情的「開始→中間→結束」順序？',opts:['雖然→但是→所以','首先→接著→最後','因為→所以→但是','不但→而且→雖然'],ans:1}
-]},
-day6:{name:'Day6 轉折閱讀進階',icon:'🧭',desc:'轉折進階／句意理解／詞義辨析',
-  qs:[
-{q:'下列哪一個選項的敘述最能代表「即使歷經一次又一次的受傷，姊姊也不會放棄喜愛的芭蕾舞」的意思？',opts:['芭蕾舞練習常常使姊姊受傷','芭蕾舞是一種十分危險的舞蹈','受傷也無法阻止姊姊練習芭蕾舞','受到的傷愈嚴重表示姊姊愈厲害'],ans:2},
-{q:'「天分高的人如果太懶惰，而不努力發揮他的才能，也難有什麼大成就，反而不如那些天分低卻努力的人。」這句話的主要意思是？',opts:['只要天分足夠，早晚都會成功','沒有失敗經驗的人，不會成功','擁有天賦的人也需要勤奮努力','所有事情都需要付出才有收穫'],ans:2},
-{q:'「一句溫暖的話，就像往別人身上灑香水，自己也會聞到香味。」這句話的涵義是？',opts:['口說好話不僅讓他人愉快，自己也會開心','想讓他人身上有香水味，就要說溫暖的話','說話時要保持口氣清新，才能感受到香氣','希望和別人說話時氣氛愉快，就要噴灑香水'],ans:0},
-{q:'「雖然」跟下列哪一個詞的功能最接近？',opts:['因為','所以','但是','首先'],ans:2},
-{q:'「手心向下是助人，手心向上是求人；助人快樂，求人痛苦。」和哪個意思最不接近？',opts:['施比受更有福','助人為快樂之本','失敗為成功之母','贈人玫瑰，手有餘香'],ans:2},
-{q:'文文把同學心愛的筆弄壞了，她正煩惱著該怎樣跟同學說。最適合形容她心情的詞語是？',opts:['迫不及待','忐忑不安','手忙腳亂','小心翼翼'],ans:1},
-{q:'下列哪個選項是「轉折複句」？',opts:['除了考試前多複習，平時還要多練習','雖然外面陰雨綿綿，但妹妹仍堅持出門','如果爸爸多做家事，就能分擔媽媽的負擔','因為大家合作無間，所以贏得冠軍'],ans:1}
-]},
-day7:{name:'Day7 標點符號與記敘文',icon:'✏️',desc:'標點符號／文體辨識／故事結構',
-  qs:[
-{q:'「火車緩緩駛出山洞後□映入眼簾的是藍天□白雲與大海。」□中依序應填入什麼標點？',opts:['，，','。，','，、','。、'],ans:2},
-{q:'「你快點說吧□這枝掃把是不是你弄斷的□」□中依序應填入什麼標點？',opts:['，。','！。','，？','！？'],ans:2},
-{q:'「李同學因為做事認真□個性溫和□所以在班上人緣很好。」□中依序應填入？',opts:['，，','，、','、、','、，'],ans:0},
-{q:'下列哪一個不是國語標點符號？',opts:['逗號（，）','頓號（、）','加號（＋）','句號（。）'],ans:2},
-{q:'校園裡有許多種類的花，可以看到杜鵑花□櫻花□桃花□迎風搖曳。□中依序應填入？',opts:['，，、','、、，','，，─','、、；'],ans:1},
-{q:'下列哪一篇是「記敘文」？',opts:['鯨豚類的介紹與分類','寫給老師的一封信（應用文）','校外教學那天發生的趣事（記敘文）','為什麼運動後會全身痠痛（說明文）'],ans:2},
-{q:'故事山的「山頂」代表故事的哪個階段？',opts:['開始（背景介紹）','經過（事件發展）','高潮（最緊張精彩處）','結果（事件結束）'],ans:2}
-]},
-day8:{name:'Day8 記敘文與童話',icon:'📚',desc:'閱讀理解／修辭手法／文體辨識',
-  qs:[
-{q:'「天上的星星一閃一閃的，正在對我眨眼睛。」這句話運用了什麼修辭手法？',opts:['譬喻','擬人','誇飾','設問'],ans:1},
-{q:'下列哪一個選項「沒有」運用擬人法？',opts:['迎風搖曳的樹枝正在向早起的人們打招呼','直挺挺的路燈在深夜裡為晚歸的人們站崗','一輛輛汽車在擁擠的高速公路上發出怒吼','房間裡安靜得連一根針掉在地上都能聽見'],ans:3},
-{q:'下列哪一個選項運用了「誇飾」手法？',opts:['哥哥的力氣大到足以抬起一棟房子','妹妹的哭聲讓全家人都跑過來關心','媽媽煮菜的香氣連隔壁鄰居都聞得到','阿嬤擦過的窗戶總是特別的光亮潔淨'],ans:0},
-{q:'下列哪一個選項運用了「聽覺摹寫」？',opts:['涼爽的風輕輕拂過我的肌膚','雨水叮叮咚咚在傘面上跳舞','外婆家屋後有一大片綠草地','空氣裡飄著淡淡的玫瑰花香'],ans:1},
-{q:'「臭豆腐香酥的口感配上酸甜的泡菜，簡直是人間美味。」這句話使用了什麼摹寫？',opts:['聽覺摹寫','嗅覺摹寫','味覺摹寫','視覺摹寫'],ans:2},
-{q:'下列哪一種是童話故事常見的元素？',opts:['統計數據和圖表','比喻和誇飾手法','有角色、有問題、有結局','先提出問題再給解決方案'],ans:2},
-{q:'閱讀時「找證據」是什麼意思？',opts:['看圖片來猜測答案','從文章中找到支持答案的句子','問同學看看答案對不對','憑自己的感覺來回答'],ans:1}
-]},
-day9:{name:'Day9 說明文閱讀',icon:'📋',desc:'說明文／主旨提取／文本結構',
-  qs:[
-{q:'依據文本特徵，下面這段文字屬於哪一種文本？「鯨豚類，體型大者稱鯨，小者稱豚。大部分棲息於淺海，通常棲息在熱帶或亞熱帶水域。」',opts:['抒情文','應用文','說明文','議論文'],ans:2},
-{q:'「在傳統信仰中，烏龜是象徵長壽的靈獸……後來漸漸改用紅龜粿取代。」這段文字的大意是？',opts:['烏龜形狀的紅龜粿非常喜氣','烏龜象徵長壽因而做成食品','紅龜粿能代表吉祥長壽之意','紅龜粿常被當作節慶的供品'],ans:2},
-{q:'人體開始運動時，吸進體內的氧氣和葡萄糖發生化學反應，釋放出能量，同時帶來乳酸。過多乳酸會讓肌肉產生痠痛的感覺。這段話主要在說明什麼？',opts:['運動完要冰敷與熱敷','造成運動後痠痛的原因','食物是人體能量的來源','如何消除運動後的痠痛'],ans:1},
-{q:'「醋能幫助身體中的血液與體液維持弱鹼性……更能抑制高血壓及肥胖。」下列哪個最適合當這段文字的標題？',opts:['醋的發明','醋的好處','醋的研究','醋的味道'],ans:1},
-{q:'T圖表的左邊通常是寫什麼？',opts:['心得感想','原因分析','結構（有什麼）','統計數字'],ans:2},
-{q:'下列哪一篇文章結構屬於「因果式」？',opts:['春天來了→夏天鳳凰花開→秋天落葉紛飛','學校前庭→教學大樓→後方操場','人類製造塑膠→廢棄塑膠流入海裡→海洋生物受威脅','我的興趣很廣泛→喜歡閱讀→也喜歡運動'],ans:2},
-{q:'「根據研究發現，我們的日常飲食大部分為酸性食物……」這段話的寫作目的最可能是？',opts:['說一個有趣的故事','介紹某個事物的知識','表達作者的心情感受','說服讀者購買產品'],ans:1}
-]},
-day10:{name:'Day10 總複習挑戰',icon:'🌟',desc:'全面複習：字詞句段篇章',
-  qs:[
-{q:'下列哪一個選項「」中讀音相同？',opts:['求「祈」／骨「折」','成「績」／堆「積」','「移」動／奢「侈」','海「藻」／「噪」音'],ans:1},
-{q:'下列哪個選項和「望塵莫及」的意思最接近？',opts:['遙遙領先，大幅超前','遠遠落後，無法追上','內外整潔，一塵不染','環境髒亂，灰塵滿布'],ans:1},
-{q:'下列哪一個選項是正確的詞語解釋？',opts:['知己知彼：知道自己的人緣很好','奮不顧身：不顧生死的奮勇向前','心驚膽戰：內心驚訝卻努力作戰','花言巧語：既實在又動聽的言語'],ans:1},
-{q:'「微風輕拂臉龐，帶來一股淡淡的花香，金色的陽光灑進樹林。」運用了哪些感覺？',opts:['觸覺、嗅覺、視覺','觸覺、視覺、嗅覺','嗅覺、觸覺、聽覺','嗅覺、聽覺、視覺'],ans:0},
-{q:'下列哪個選項「沒有」運用「擬人」的寫作手法？',opts:['滑梯默默的站在操場陪孩子玩耍','星星在夜空中一閃一閃玩捉迷藏','花朵在微風輕撫下露出了甜美笑容','老先生在昏暗燈光下拿出雪白的皮夾'],ans:3},
-{q:'下列哪一個選項的句子最為合理、通順？',opts:['因為下雨了，所以他沒帶雨傘','雖然下雨了，所以他沒帶雨傘','因為下雨了，但是他沒帶雨傘','不但下雨了，所以他沒帶雨傘'],ans:0},
-{q:'「他既然『決』定要辭職，就『 』對不會接受任何人的慰留。」空格應填入？',opts:['決','絕','抉','訣'],ans:1},
-{q:'下列選項何者不是「說明文」的特色？',opts:['客觀的介紹事物','用數據和事實說明','表達作者的心情感受','清楚的結構和分類'],ans:2}
-]}
-};
-
-// 總複習 25 題（從各關卡挑選並新增一些綜合題）
-const finalQs=[
+// ═══════════ 題庫（25 題，110-114 學力檢測題型）═══════════
+const QUESTIONS=[
 {q:'下列哪一個選項「」中讀音相同？',opts:['「輪」番上陣／天「倫」之樂','一「波」三折／「坡」度陡峭','「偏」遠地區／漫山「遍」野','「刻」骨銘心／應「該」愛護環境'],ans:1},
 {q:'下列哪一組「」中的字形是正確的？',opts:['名勝古「積」／堆「積」如山','拋在「腦」後／自尋煩「惱」','「檢」查作業／「檢」舉違規','「籃」球比賽／「籃」天白雲'],ans:2},
 {q:'「哥哥雖然已經很累了，但是為了明天的考試，他還是努力複習。」這是什麼句型？',opts:['轉折句','條件句','假設句','並列句'],ans:0},
-{q:'氣象預報說今天降雨機率百分之百，因此我「肯定」今天「可能」會下雨。哪個詞刪除後句子更通順？',opts:['預報','因此','肯定','可能'],ans:2},
+{q:'氣象預報說降雨機率百分之百，因此我「肯定」今天「可能」會下雨。哪個詞刪除後句子更通順？',opts:['預報','因此','肯定','可能'],ans:2},
 {q:'「火車緩緩駛出山洞後□映入眼簾的是藍天□白雲與大海。」□中依序應填入？',opts:['，，','。，','，、','。、'],ans:2},
 {q:'「天上的星星一閃一閃的，正在對我眨眼睛。」這句話運用了什麼修辭手法？',opts:['譬喻','擬人','誇飾','設問'],ans:1},
 {q:'下列哪一個選項是「恍然大悟」的意思？',opts:['頭昏後才明白','忽然完全明白','早就已經明白','心裡好像明白'],ans:1},
 {q:'「只有每天注意飲食，並且持之以恆的運動，才能擁有健康的身體。」是什麼句型？',opts:['轉折句','條件句','因果句','並列句'],ans:1},
 {q:'下列哪一個段落組成方式屬於「時間式」結構？',opts:['家中擺設→庭院風景→街道景色','早上搭車→午餐前參觀→下午闖關','糖廠大門→糖廠廣場→糖廠辦公室','校外教學原因→過程→感想'],ans:1},
-{q:'下列哪一個選項使用「因果句型」？',opts:['爸爸的車拋錨，所以上班遲到了','如果你上課專心聽講，就會寫這份作業','起先我用鉛筆畫線條，再來用水彩上色','這次戶外教學，讓我既興奮又期待'],ans:0},
+{q:'下列哪一個選項使用「因果句型」？',opts:['爸爸的車拋錨，所以上班遲到了','如果你上課專心聽講，就會寫作業','起先我用鉛筆畫線條，再來用水彩上色','這次戶外教學，讓我既興奮又期待'],ans:0},
 {q:'「雖然外面陰雨綿綿，但妹妹仍堅持去海洋樂園玩。」句中哪個是轉折詞？',opts:['雖然','但','去','玩'],ans:1},
 {q:'「即使歷經一次又一次的受傷，姊姊也不會放棄喜愛的芭蕾舞。」主要意思是？',opts:['芭蕾舞練習常常使姊姊受傷','芭蕾舞是一種十分危險的舞蹈','受傷也無法阻止姊姊練習芭蕾舞','受到的傷愈嚴重表示姊姊愈厲害'],ans:2},
-{q:'「一句溫暖的話，就像往別人身上灑香水，自己也會聞到香味。」涵義是？',opts:['口說好話不僅讓他人愉快，自己也會開心','想讓他人身上有香水味，就要說溫暖的話','說話時要保持口氣清新，才能感受到香氣','希望和別人說話時氣氛愉快，就要灑香水'],ans:0},
-{q:'下列哪個選項「沒有」運用擬人法？',opts:['迎風搖曳的樹枝正在向早起的人們打招呼','直挺挺的路燈在深夜裡為晚歸的人們站崗','一輛輛汽車在擁擠的高速公路上發出怒吼','房間裡安靜得連一根針掉在地上都能聽見'],ans:3},
-{q:'「校園裡有許多種類的花，可以看到杜鵑花□櫻花□桃花□迎風搖曳。」□中依序？',opts:['，，、','、、，','，，─','、、；'],ans:1},
+{q:'「一句溫暖的話，就像往別人身上灑香水，自己也會聞到香味。」涵義是？',opts:['口說好話讓他人愉快，自己也會開心','想讓他人身上有香水味，就要說溫暖的話','說話時要保持口氣清新，才能感受到香氣','和別人說話時氣氛愉快，就要灑香水'],ans:0},
+{q:'下列哪個選項「沒有」運用擬人法？',opts:['迎風搖曳的樹枝正在向人們打招呼','路燈在深夜裡為晚歸的人們站崗','汽車在高速公路上發出怒吼','房間裡安靜得連一根針掉在地上都能聽見'],ans:3},
+{q:'校園裡有許多花，可以看到杜鵑花□櫻花□桃花□迎風搖曳。□中依序應填入？',opts:['，，、','、、，','，，─','、、；'],ans:1},
 {q:'依據文本特徵，下面這段屬於哪一種文本？「鯨豚類，體型大者稱鯨，小者稱豚。大部分棲息於淺海。」',opts:['抒情文','應用文','說明文','議論文'],ans:2},
 {q:'「醋能幫助身體中血液維持弱鹼性……更能抑制高血壓及肥胖。」這段文字主要在說？',opts:['醋的發明','醋的好處','醋的研究','醋的味道'],ans:1},
 {q:'「微風輕拂臉龐，帶來一股淡淡的花香，金色的陽光灑進樹林。」運用了哪些感覺？',opts:['觸覺、嗅覺、視覺','觸覺、視覺、嗅覺','嗅覺、觸覺、聽覺','嗅覺、聽覺、視覺'],ans:0},
 {q:'「____下雨了，我____帶雨傘。」空格應填入？',opts:['雖然／但是','因為／所以','不但／而且','只有／才能'],ans:1},
-{q:'文文把同學心愛的筆弄壞了，她正煩惱著該怎樣跟同學說。最適合形容她心情的詞是？',opts:['迫不及待','忐忑不安','手忙腳亂','小心翼翼'],ans:1},
+{q:'文文把同學心愛的筆弄壞了，正煩惱怎樣跟同學說。最適合形容她心情的詞是？',opts:['迫不及待','忐忑不安','手忙腳亂','小心翼翼'],ans:1},
 {q:'下列哪一個選項用了「誇飾」手法？',opts:['哥哥的力氣大到足以抬起一棟房子','妹妹的哭聲讓全家人都跑過來關心','媽媽煮菜的香氣連隔壁鄰居都聞得到','阿嬤擦過的窗戶總是特別的光亮潔淨'],ans:0},
 {q:'下列哪一個選項「沒有」轉折詞？',opts:['雖然下雨，但我還是出門','因為下雨，所以我帶雨傘','他個子小，但是力氣大','這道菜很簡單，卻很好吃'],ans:1},
 {q:'「他既然『決』定要辭職，就『 』對不會接受任何人的慰留。」空格應填入？',opts:['決','絕','抉','訣'],ans:1},
@@ -332,92 +202,43 @@ const finalQs=[
 {q:'故事山的「山頂」代表故事的哪個階段？',opts:['開始（背景介紹）','經過（事件發展）','高潮（最緊張精彩處）','結果（事件結束）'],ans:2}
 ];
 
-// ═══════════════ 遊戲狀態 ═══════════════
-let pName='',gameKey='',qIdx=0,score=0,correct=0,total=0;
-let gameStart=0,qStart=0,answering=false,timer=null,timeLeft=30;
-const Q_TIME=30;
+// ═══════════ 遊戲狀態 ═══════════
+let pName='',qIdx=0,score=0,correct=0;
+let gameStart=0,answering=false,timer=null,timeLeft=30;
+const Q_TIME=30,TOTAL=QUESTIONS.length;
 
-// ═══════════════ DOM ═══════════════
+// ═══════════ DOM ═══════════
 const $=id=>document.getElementById(id);
 
-// ═══════════════ 星星背景 ═══════════════
-(function(){
-  const c=$('stars');
-  for(let i=0;i<50;i++){
-    const s=document.createElement('span');
-    const sz=Math.random()*3+1;
-    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*3}s`;
-    c.appendChild(s);
-  }
-})();
-
-// ═══════════════ 畫面切換 ═══════════════
+// ═══════════ 畫面切換 ═══════════
 function show(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  $(id).classList.add('active');
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  $(id).classList.add('on');
 }
 
-// ═══════════════ 1. 開始 → 輸入名字 ═══════════════
+// ═══════════ 開始 ═══════════
 const nameInp=$('nameInp'),btnGo=$('btnGo');
 nameInp.addEventListener('input',()=>{btnGo.disabled=nameInp.value.trim().length<1});
-nameInp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!btnGo.disabled)goMenu();});
-btnGo.addEventListener('click',goMenu);
+nameInp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!btnGo.disabled)startGame()});
+btnGo.addEventListener('click',startGame);
 
-function goMenu(){
+function startGame(){
   pName=nameInp.value.trim();
   if(!pName)return;
-  $('menuPlayer').textContent='玩家：'+pName+'，請選擇要挑戰的關卡：';
-  buildDayGrid();
-  show('scrMenu');
-}
-
-// ═══════════════ 2. 選天 ═══════════════
-function buildDayGrid(){
-  const grid=$('dayGrid');
-  let h='';
-  for(let d=1;d<=10;d++){
-    const g=Qs['day'+d];
-    h+=`<div class="day-card" data-game="day${d}">
-      <span class="day-icon">${g.icon}</span>
-      <span class="day-label">${g.name}</span>
-      <span class="day-desc">${g.desc}</span>
-    </div>`;
-  }
-  h+=`<div class="day-card final" data-game="final">
-    <span class="day-icon">🏆</span>
-    <span class="day-label">總複習大挑戰</span>
-    <span class="day-desc">25題綜合檢測</span>
-  </div>`;
-  grid.innerHTML=h;
-  grid.querySelectorAll('.day-card').forEach(c=>{
-    c.addEventListener('click',()=>startGame(c.dataset.game));
-  });
-}
-
-$('btnBack').addEventListener('click',()=>show('scrStart'));
-
-// ═══════════════ 3. 開始遊戲 ═══════════════
-function startGame(key){
-  gameKey=key;
-  score=0;correct=0;total=0;qIdx=0;
-  const qs=key==='final'?finalQs:Qs[key].qs;
-  total=qs.length;
-  const gn=key==='final'?'總複習大挑戰':Qs[key].name;
-  $('stageName').textContent=gn;
+  qIdx=0;score=0;correct=0;gameStart=Date.now();
   $('curScore').textContent='0';
-  gameStart=Date.now();
   show('scrGame');
-  showQuestion();
+  showQ();
 }
 
-function showQuestion(){
-  const qs=gameKey==='final'?finalQs:Qs[gameKey].qs;
-  if(qIdx>=qs.length){showResult();return;}
-  const qd=qs[qIdx];
-  $('qNum').textContent=`第 ${qIdx+1} / ${qs.length} 題`;
+// ═══════════ 顯示題目 ═══════════
+function showQ(){
+  if(qIdx>=TOTAL){showResult();return;}
+  const qd=QUESTIONS[qIdx];
+  $('qNum').textContent='第 '+(qIdx+1)+' / '+TOTAL+' 題';
   $('qText').textContent=qd.q;
   $('fb').textContent='';$('fb').className='fb';
-  $('btnNextQ').style.display='none';
+  $('btnNext').style.display='none';
 
   const ob=$('optsBox');
   ob.innerHTML='';
@@ -433,7 +254,6 @@ function showQuestion(){
   timeLeft=Q_TIME;
   $('timeDisp').textContent=timeLeft;
   $('timeBadge').className='badge badge-time';
-  qStart=Date.now();
   answering=true;
   clearInterval(timer);
   timer=setInterval(()=>{
@@ -445,27 +265,27 @@ function showQuestion(){
   },1000);
 }
 
+// ═══════════ 時間到 ═══════════
 function timeUp(){
   if(!answering)return;
   answering=false;
-  const qs=gameKey==='final'?finalQs:Qs[gameKey].qs;
-  const qd=qs[qIdx];
+  const qd=QUESTIONS[qIdx];
   document.querySelectorAll('.opt').forEach((b,i)=>{
     b.classList.add('disabled');
     if(i===qd.ans)b.classList.add('correct');
   });
-  $('fb').textContent='⏰ 時間到！答案：'+['A','B','C','D'][qd.ans];
+  $('fb').textContent='⏰ 時間到！正確答案：'+['A','B','C','D'][qd.ans];
   $('fb').className='fb ng';
   $('timeBadge').className='badge badge-time';
-  $('btnNextQ').style.display='inline-block';
+  $('btnNext').style.display='inline-block';
 }
 
+// ═══════════ 選擇答案 ═══════════
 function select(idx){
   if(!answering)return;
   answering=false;
   clearInterval(timer);
-  const qs=gameKey==='final'?finalQs:Qs[gameKey].qs;
-  const qd=qs[qIdx];
+  const qd=QUESTIONS[qIdx];
   const btns=document.querySelectorAll('.opt');
   btns.forEach(b=>b.classList.add('disabled'));
   btns[qd.ans].classList.add('correct');
@@ -480,14 +300,14 @@ function select(idx){
     $('fb').className='fb ok';
   }else{
     btns[idx].classList.add('wrong');
-    $('fb').textContent='❌ 答錯了！答案：'+['A','B','C','D'][qd.ans];
+    $('fb').textContent='❌ 答錯了！正確答案：'+['A','B','C','D'][qd.ans];
     $('fb').className='fb ng';
   }
   $('timeBadge').className='badge badge-time';
-  $('btnNextQ').style.display='inline-block';
+  $('btnNext').style.display='inline-block';
 }
 
-$('btnNextQ').addEventListener('click',()=>{qIdx++;showQuestion();});
+$('btnNext').addEventListener('click',()=>{qIdx++;showQ();});
 
 // 鍵盤 1-4 選答案
 document.addEventListener('keydown',e=>{
@@ -496,40 +316,34 @@ document.addEventListener('keydown',e=>{
   if(k>='1'&&k<='4')select(parseInt(k)-1);
 });
 
-// ═══════════════ 4. 結果 ═══════════════
+// ═══════════ 結果 ═══════════
 async function showResult(){
   const sec=Math.floor((Date.now()-gameStart)/1000);
   const m=Math.floor(sec/60),s=sec%60;
   const ts=m>0?m+' 分 '+s+' 秒':s+' 秒';
-  const totalQs=gameKey==='final'?finalQs.length:Qs[gameKey].qs.length;
-  const isFinal=gameKey==='final';
-  const gn=isFinal?'總複習大挑戰':Qs[gameKey].name;
+  const max=TOTAL*25;
 
-  $('resIcon').textContent=isFinal?'🏆':Qs[gameKey].icon;
-  $('resTitle').textContent=gn+' 完成！';
   $('resName').textContent=pName;
-  $('resGame').textContent=gn;
-  $('resScore').textContent=score+' / '+(totalQs*25);
-  $('resCorrect').textContent=correct+' / '+totalQs+' 題';
+  $('resScore').textContent=score+' / '+max;
+  $('resCorrect').textContent=correct+' / '+TOTAL+' 題';
   $('resTime').textContent=ts;
 
-  const max=totalQs*25;
   let rc='rank-norm',rt='繼續加油！';
   const pct=score/max;
   if(pct>=.9){rc='rank-gold';rt='🏅 國語大師！';}
   else if(pct>=.7){rc='rank-silver';rt='🥈 國語高手！';}
   else if(pct>=.5){rc='rank-bronze';rt='🥉 國語好手！';}
-  $('resRank').innerHTML=`<div class="rank ${rc}">${rt}</div>`;
+  $('resRank').innerHTML='<div class="rank '+rc+'">'+rt+'</div>';
 
   show('scrResult');
 
   // 儲存
   $('savingStat').textContent='正在儲存...';
-  if(!sb){ $('savingStat').textContent='⚠️ 離線模式，成績未儲存'; $('savingStat').style.color='#d97706'; return; }
+  if(!sb){$('savingStat').textContent='⚠️ 離線模式，成績未儲存';$('savingStat').style.color='#d97706';loadLB();return;}
   try{
     const {error}=await sb.from('chinese_game_records').insert({
       student_name:pName,score:score,correct_count:correct,
-      total_questions:totalQs,time_seconds:sec,game_type:gameKey
+      total_questions:TOTAL,time_seconds:sec,game_type:'final'
     });
     if(error)throw error;
     $('savingStat').textContent='✅ 成績已儲存！';
@@ -544,10 +358,10 @@ async function showResult(){
 
 async function loadLB(){
   const lb=$('lbBox');
-  if(!sb){ lb.innerHTML='<p style="text-align:center;color:#9c8cb5;">離線模式</p>'; return; }
+  if(!sb){lb.innerHTML='<p style="text-align:center;color:#9c8cb5;">離線模式</p>';return;}
   try{
     const {data,error}=await sb.from('chinese_game_records')
-      .select('student_name,score,time_seconds,game_type')
+      .select('student_name,score,time_seconds')
       .order('score',{ascending:false}).order('time_seconds',{ascending:true}).limit(15);
     if(error)throw error;
     if(!data||!data.length){lb.innerHTML='<p style="text-align:center;color:#9c8cb5;">尚無記錄</p>';return;}
@@ -556,12 +370,7 @@ async function loadLB(){
       const med=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
       const m2=Math.floor(r.time_seconds/60),s2=r.time_seconds%60;
       const t2=m2>0?m2+'分'+s2+'秒':s2+'秒';
-      const typeName=r.game_type==='final'?'總複習':(Qs[r.game_type]?Qs[r.game_type].name.replace('Day','D'):r.game_type);
-      h+=`<div class="lb-item">
-        <span class="lb-rank">${med}</span>
-        <span class="lb-name">${esc(r.student_name)}<span class="lb-type">${typeName}</span></span>
-        <span class="lb-score">${r.score}分·${t2}</span>
-      </div>`;
+      h+='<div class="lb-item"><span>'+med+'</span><span class="lb-name">'+esc(r.student_name)+'</span><span class="lb-score">'+r.score+'分·'+t2+'</span></div>';
     });
     lb.innerHTML=h;
   }catch(e){lb.innerHTML='<p style="text-align:center;color:#9c8cb5;">載入失敗</p>';}
@@ -569,11 +378,7 @@ async function loadLB(){
 
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 
-$('btnMenu').addEventListener('click',()=>{
-  buildDayGrid();show('scrMenu');
-});
-
-})();
+$('btnRetry').addEventListener('click',()=>{show('scrStart');nameInp.focus();});
 </script>
 </body>
 </html>
