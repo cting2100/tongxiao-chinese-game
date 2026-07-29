@@ -134,7 +134,7 @@ h2{font-size:1.3em;color:#5b3a8c;margin-bottom:12px}
   <div class="desc">
     <p><b>遊戲說明：</b></p>
     <p>• 共 10 天關卡 + 1 場總複習，依照每日上課進度設計</p>
-    <p>• 每題 15 秒限時，答對每題最高可得 25 分</p>
+    <p>• 每題 30 秒限時，答對每題最高可得 25 分</p>
     <p>• 題目來自 110-114 年學力檢測題型</p>
   </div>
   <div class="inp-group">
@@ -157,7 +157,7 @@ h2{font-size:1.3em;color:#5b3a8c;margin-bottom:12px}
   <div class="game-top">
     <span class="badge badge-stage" id="stageName"></span>
     <span class="badge badge-score">⭐ <span id="curScore">0</span> 分</span>
-    <span class="badge badge-time" id="timeBadge">⏱ <span id="timeDisp">15</span>s</span>
+    <span class="badge badge-time" id="timeBadge">⏱ <span id="timeDisp">30</span>s</span>
   </div>
   <div class="q-area">
     <div class="q-num" id="qNum"></div>
@@ -187,12 +187,17 @@ h2{font-size:1.3em;color:#5b3a8c;margin-bottom:12px}
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="this.onerror=null;this.src='https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js'"></script>
 <script>
 // ═══════════════ Supabase ═══════════════
 const SUPABASE_URL='https://kkqsqlwlxeffdoondlcj.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrcXNxbHdseGVmZmRvb25kbGNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMTkxOTIsImV4cCI6MjEwMDc5NTE5Mn0.ZT1tD-UrCPtfkcTYt3UytTiXi_J2fyqzW1Wbh76NkwI';
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let sb=null;
+try{
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+}catch(e){
+  console.warn('Supabase 未載入，遊戲仍可進行但無法儲存成績');
+}
 
 // ═══════════════ 題庫（依 110-114 學力檢測題型設計）═══════════════
 const Qs={
@@ -329,8 +334,8 @@ const finalQs=[
 
 // ═══════════════ 遊戲狀態 ═══════════════
 let pName='',gameKey='',qIdx=0,score=0,correct=0,total=0;
-let gameStart=0,qStart=0,answering=false,timer=null,timeLeft=15;
-const Q_TIME=15;
+let gameStart=0,qStart=0,answering=false,timer=null,timeLeft=30;
+const Q_TIME=30;
 
 // ═══════════════ DOM ═══════════════
 const $=id=>document.getElementById(id);
@@ -434,8 +439,8 @@ function showQuestion(){
   timer=setInterval(()=>{
     timeLeft--;
     $('timeDisp').textContent=timeLeft;
-    if(timeLeft<=8)$('timeBadge').className='badge badge-time warn';
-    if(timeLeft<=4)$('timeBadge').className='badge badge-time danger';
+    if(timeLeft<=15)$('timeBadge').className='badge badge-time warn';
+    if(timeLeft<=6)$('timeBadge').className='badge badge-time danger';
     if(timeLeft<=0){clearInterval(timer);timeUp();}
   },1000);
 }
@@ -520,6 +525,7 @@ async function showResult(){
 
   // 儲存
   $('savingStat').textContent='正在儲存...';
+  if(!sb){ $('savingStat').textContent='⚠️ 離線模式，成績未儲存'; $('savingStat').style.color='#d97706'; return; }
   try{
     const {error}=await sb.from('chinese_game_records').insert({
       student_name:pName,score:score,correct_count:correct,
@@ -538,6 +544,7 @@ async function showResult(){
 
 async function loadLB(){
   const lb=$('lbBox');
+  if(!sb){ lb.innerHTML='<p style="text-align:center;color:#9c8cb5;">離線模式</p>'; return; }
   try{
     const {data,error}=await sb.from('chinese_game_records')
       .select('student_name,score,time_seconds,game_type')
