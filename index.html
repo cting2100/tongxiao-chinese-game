@@ -103,6 +103,12 @@ h2{font-size:1.3em;color:#5b3a8c;margin-bottom:12px}
 .lb-name{flex:1;color:#2d1b69;font-weight:bold;padding:0 8px}
 .lb-score{color:#7c5ce7;font-weight:bold}
 
+/* AI 分析卡 */
+.ai-card{background:linear-gradient(135deg,#fef9ef,#f0fdf4);border:2px solid #a7f3d0;border-radius:14px;padding:16px;margin:12px auto;max-width:500px;text-align:left;font-size:.9em;line-height:1.7}
+.ai-card h3{color:#059669;font-size:1em;margin-bottom:8px}
+.ai-card p{margin:4px 0}
+.ai-load{color:#9c8cb5;font-style:italic;text-align:center}
+
 @media(max-width:480px){
   .container{padding:18px 12px}
   h1{font-size:1.3em}
@@ -162,6 +168,7 @@ h2{font-size:1.3em;color:#5b3a8c;margin-bottom:12px}
     <div class="stat-row"><span class="stat-l">時間</span><span class="stat-v" id="resTime"></span></div>
   </div>
   <div class="saving" id="savingStat">正在儲存...</div>
+  <div class="ai-card" id="aiCard" style="display:none"></div>
   <div class="lb" id="lbBox"></div>
   <button class="btn btn-war btn-lg" id="btnRetry" style="margin-top:12px">再玩一次 🔄</button>
 </div>
@@ -206,7 +213,7 @@ const QUESTIONS=[
 ];
 
 // ═══════════ 遊戲狀態 ═══════════
-let pName='',qIdx=0,score=0,correct=0;
+let pName='',qIdx=0,score=0,correct=0,wrongs=[];
 let gameStart=0,answering=false,timer=null,timeLeft=30;
 const Q_TIME=30,TOTAL=QUESTIONS.length;
 
@@ -228,7 +235,7 @@ btnGo.addEventListener('click',startGame);
 function startGame(){
   pName=nameInp.value.trim();
   if(!pName)return;
-  qIdx=0;score=0;correct=0;gameStart=Date.now();
+  qIdx=0;score=0;correct=0;wrongs=[];gameStart=Date.now();
   $('curScore').textContent='0';
   show('scrGame');
   showQ();
@@ -273,6 +280,7 @@ function timeUp(){
   if(!answering)return;
   answering=false;
   const qd=QUESTIONS[qIdx];
+  wrongs.push({q:qd.q,opts:qd.opts,ans:qd.ans,chosen:-1});
   document.querySelectorAll('.opt').forEach((b,i)=>{
     b.classList.add('disabled');
     if(i===qd.ans)b.classList.add('correct');
@@ -302,6 +310,7 @@ function select(idx){
     $('fb').textContent='✅ 答對了！+'+pts+' 分';
     $('fb').className='fb ok';
   }else{
+    wrongs.push({q:qd.q,opts:qd.opts,ans:qd.ans,chosen:idx});
     btns[idx].classList.add('wrong');
     $('fb').textContent='❌ 答錯了！正確答案：'+['A','B','C','D'][qd.ans];
     $('fb').className='fb ng';
@@ -340,23 +349,42 @@ async function showResult(){
 
   show('scrResult');
 
-  // 儲存
+  // 儲存（不影響後續流程）
   $('savingStat').textContent='正在儲存...';
-  if(!sb){$('savingStat').textContent='⚠️ 離線模式，成績未儲存';$('savingStat').style.color='#d97706';loadLB();return;}
-  try{
-    const {error}=await sb.from('chinese_game_records').insert({
-      student_name:pName,score:score,correct_count:correct,
-      total_questions:TOTAL,time_seconds:sec,game_type:'final'
-    });
-    if(error)throw error;
-    $('savingStat').textContent='✅ 成績已儲存！';
-    $('savingStat').style.color='#059669';
-  }catch(e){
-    console.error(e);
-    $('savingStat').textContent='⚠️ 儲存失敗（請截圖保存）';
-    $('savingStat').style.color='#dc2626';
+  if(sb){
+    try{
+      const {error}=await sb.from('chinese_game_records').insert({
+        student_name:pName,score:score,correct_count:correct,
+        total_questions:TOTAL,time_seconds:sec,game_type:'final'
+      });
+      if(error)throw error;
+      $('savingStat').textContent='✅ 成績已儲存！';
+      $('savingStat').style.color='#059669';
+    }catch(e){
+      console.error(e);
+      $('savingStat').textContent='⚠️ 儲存失敗（請截圖保存）';
+      $('savingStat').style.color='#dc2626';
+    }
+  }else{
+    $('savingStat').textContent='⚠️ 離線模式，成績未儲存';
+    $('savingStat').style.color='#d97706';
   }
   loadLB();
+
+  // AI 分析
+  if(wrongs.length>0){
+    $('aiCard').style.display='block';
+    $('aiCard').innerHTML='<div class="ai-load">🤖 AI 正在分析你的答題狀況，請稍候...</div>';
+    const aiText=await getAI(wrongs,pName,score,correct,TOTAL);
+    if(aiText){
+      $('aiCard').innerHTML='<h3>🤖 AI 學習分析</h3>'+aiText.split('\n').filter(l=>l.trim()).map(l=>'<p>'+l+'</p>').join('');
+    }else{
+      $('aiCard').innerHTML='<h3>🤖 AI 分析</h3><p>AI 暫時無法分析，請稍後再試。你可以看看答錯的題目，再練習一次喔！</p>';
+    }
+  }else{
+    $('aiCard').style.display='block';
+    $('aiCard').innerHTML='<h3>🤖 AI 小評語</h3><p>太厲害了！全部答對！你的國語能力非常扎實，繼續保持！🎉</p>';
+  }
 }
 
 async function loadLB(){
@@ -380,6 +408,39 @@ async function loadLB(){
 }
 
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+// ═══════════ AI 分析（透過 Supabase Edge Function）═══════════
+async function getAI(wrongList, player, score, correct, total){
+  if(!wrongList.length) return null;
+  const labels=['A','B','C','D'];
+  const wrongText=wrongList.map((w,i)=>{
+    const ca=labels[w.ans];
+    const ch=w.chosen>=0?labels[w.chosen]:'（未作答）';
+    return `第${i+1}題：${w.q}\n正確答案：${ca}｜學生選了：${ch}`;
+  }).join('\n---\n');
+  const prompt=`你是專業的國小四年級國語補救教學老師。學生${player}剛做完25題總複習測驗，答對${correct}/${total}題（得分${score}分），答錯了${wrongList.length}題。
+
+以下是答錯的題目：
+${wrongText}
+
+請用繁體中文，以溫暖、鼓勵的語氣，寫一段不超過200字的簡單分析：
+1. 先給學生一句鼓勵
+2. 分析學生最需要加強的部分（例如：讀音、形近字、句型判斷、標點、修辭、閱讀理解）
+3. 給一個具體的學習建議
+
+語氣要像國小老師對小朋友說話，簡單易懂，不要用太難的詞。`;
+
+  try{
+    const res=await fetch('https://kkqsqlwlxeffdoondlcj.supabase.co/functions/v1/ai-tutor',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    if(data.choices&&data.choices[0])return data.choices[0].message.content;
+    return null;
+  }catch(e){console.error('AI error:',e);return null;}
+}
 
 $('btnRetry').addEventListener('click',()=>{show('scrStart');nameInp.focus();});
 </script>
