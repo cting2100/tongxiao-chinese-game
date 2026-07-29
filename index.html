@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國語小勇士大冒險</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Microsoft JhengHei','PingFang TC','Noto Sans TC',sans-serif;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  overflow-x: hidden;
+}
+
+/* star particles bg */
+.stars { position:fixed; inset:0; pointer-events:none; z-index:0; }
+.star { position:absolute; background:#fff; border-radius:50%; animation:twinkle 3s infinite; }
+@keyframes twinkle { 0%,100%{opacity:.3} 50%{opacity:1} }
+
+.game-container {
+  position:relative; z-index:1;
+  width:95vw; max-width:700px; min-height:500px;
+  background: rgba(255,255,255,.92);
+  border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,.4);
+  padding: 30px; text-align: center;
+  transition: all .4s;
+}
+
+/* screens */
+.screen { display:none; }
+.screen.active { display:block; animation: fadeIn .5s; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+h1 { font-size:2.2em; color:#2d1b69; margin-bottom:8px; }
+h2 { font-size:1.5em; color:#5b3a8c; margin-bottom:16px; }
+.subtitle { color:#7c6ba0; font-size:1em; margin-bottom:20px; }
+
+/* start screen */
+.start-hero { font-size:4em; margin:10px 0; }
+.start-desc { background:#f3effa; border-radius:16px; padding:16px; margin:16px 0; text-align:left; font-size:.95em; color:#4a3b6b; line-height:1.8; }
+.start-desc li { margin:4px 0; }
+
+.input-group { margin:20px 0; }
+.input-group label { display:block; font-size:1.1em; color:#2d1b69; font-weight:bold; margin-bottom:8px; }
+.input-group input {
+  width:100%; max-width:360px; padding:14px 20px;
+  border:3px solid #d4c8f0; border-radius:14px;
+  font-size:1.2em; text-align:center; outline:none;
+  transition:border .3s;
+}
+.input-group input:focus { border-color:#7c5ce7; }
+
+.btn {
+  display:inline-block; padding:14px 40px;
+  border:none; border-radius:14px;
+  font-size:1.2em; font-weight:bold; cursor:pointer;
+  transition: all .25s; font-family:inherit;
+}
+.btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.15); }
+.btn:active { transform:translateY(0); }
+
+.btn-primary {
+  background: linear-gradient(135deg,#7c5ce7,#a855f7);
+  color:#fff;
+}
+.btn-success {
+  background: linear-gradient(135deg,#10b981,#34d399);
+  color:#fff;
+}
+.btn-warning {
+  background: linear-gradient(135deg,#f59e0b,#fbbf24);
+  color:#fff;
+}
+.btn-large { padding:16px 50px; font-size:1.4em; }
+.btn:disabled { opacity:.5; cursor:not-allowed; transform:none; box-shadow:none; }
+
+/* game screen */
+.game-header {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:8px; flex-wrap:wrap; gap:8px;
+}
+.stage-badge {
+  background: linear-gradient(135deg,#7c5ce7,#a855f7);
+  color:#fff; padding:6px 16px; border-radius:20px; font-size:.9em;
+}
+.score-badge, .timer-badge {
+  background:#f3effa; color:#5b3a8c; padding:6px 16px;
+  border-radius:20px; font-size:.9em; font-weight:bold;
+}
+.timer-badge.warning { background:#fef3c7; color:#d97706; }
+.timer-badge.danger { background:#fee2e2; color:#dc2626; animation:pulse .5s infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+
+.question-area { margin:20px 0; }
+.question-number { font-size:.85em; color:#9c8cb5; margin-bottom:6px; }
+.question-text {
+  font-size:1.4em; color:#1e1040; font-weight:bold;
+  background:#f8f6fc; padding:20px; border-radius:16px;
+  line-height:1.6; margin-bottom:16px;
+}
+
+.options { display:flex; flex-direction:column; gap:10px; }
+.option-btn {
+  display:block; width:100%; padding:16px 20px;
+  border:3px solid #e8e0f5; border-radius:14px;
+  background:#fff; font-size:1.15em; cursor:pointer;
+  text-align:left; transition:all .2s; font-family:inherit;
+  color:#2d1b69;
+}
+.option-btn:hover { border-color:#a78bfa; background:#faf8ff; }
+.option-btn.correct { border-color:#10b981; background:#d1fae5; color:#065f46; animation:pop .3s; }
+.option-btn.wrong { border-color:#ef4444; background:#fee2e2; color:#991b1b; animation:shake .4s; }
+.option-btn.disabled { pointer-events:none; opacity:.7; }
+
+@keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.04)} 100%{transform:scale(1)} }
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+
+.feedback-text { font-size:1.2em; font-weight:bold; margin:12px 0; min-height:32px; }
+.feedback-text.correct-fb { color:#059669; }
+.feedback-text.wrong-fb { color:#dc2626; }
+
+/* stage complete */
+.stage-complete h2 { color:#7c5ce7; }
+.stage-complete .stage-icon { font-size:3em; margin:10px 0; }
+.stage-stats { font-size:1.1em; color:#5b3a8c; margin:10px 0; }
+
+/* final screen */
+.final-icon { font-size:5em; margin:10px 0; }
+.final-stats { margin:16px auto; max-width:400px; }
+.stat-row { display:flex; justify-content:space-between; padding:10px 16px; border-bottom:1px solid #e8e0f5; font-size:1.1em; }
+.stat-row:last-child { border-bottom:none; }
+.stat-label { color:#7c6ba0; }
+.stat-value { color:#2d1b69; font-weight:bold; }
+
+.rank-badge {
+  display:inline-block; padding:8px 24px; border-radius:20px;
+  font-size:1.2em; font-weight:bold; margin:12px 0;
+}
+.rank-gold { background:#fef3c7; color:#92400e; }
+.rank-silver { background:#e2e8f0; color:#475569; }
+.rank-bronze { background:#fde68a; color:#92400e; }
+.rank-normal { background:#f3effa; color:#5b3a8c; }
+
+.leaderboard { margin:16px auto; max-width:500px; text-align:left; }
+.leaderboard h3 { color:#5b3a8c; margin-bottom:8px; }
+.lb-item {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:8px 14px; background:#f8f6fc; border-radius:10px;
+  margin:4px 0; font-size:.95em;
+}
+.lb-item:nth-child(1) .lb-rank { color:#f59e0b; }
+.lb-item:nth-child(2) .lb-rank { color:#9ca3af; }
+.lb-item:nth-child(3) .lb-rank { color:#d97706; }
+.lb-name { flex:1; color:#2d1b69; font-weight:bold; }
+.lb-score { color:#7c5ce7; font-weight:bold; }
+
+.saving-text { color:#7c6ba0; font-size:.9em; margin:8px 0; }
+
+@media (max-width:480px) {
+  .game-container { padding:20px 16px; }
+  h1 { font-size:1.6em; }
+  .question-text { font-size:1.1em; }
+  .option-btn { font-size:1em; padding:12px 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="game-container">
+
+<!-- ===== 開始畫面 ===== -->
+<div class="screen active" id="startScreen">
+  <div class="start-hero">🏰</div>
+  <h1>國語小勇士大冒險</h1>
+  <h2>10天課程總複習挑戰</h2>
+  <div class="start-desc">
+    <p style="font-weight:bold;margin-bottom:8px;">🎯 遊戲規則：</p>
+    <ul>
+      <li>共 <b>5 大關卡</b>，每關 <b>5 題</b>，共 25 題</li>
+      <li>每題 20 分，滿分 <b>500 分</b></li>
+      <li>答題有時間限制，越快分數越高！</li>
+      <li>涵蓋：部首、轉折詞、標點、時間順序、篇章閱讀</li>
+    </ul>
+  </div>
+  <div class="input-group">
+    <label for="studentName">請輸入你的名字：</label>
+    <input type="text" id="studentName" placeholder="例如：小明" maxlength="20" autocomplete="off">
+  </div>
+  <button class="btn btn-primary btn-large" id="btnStart" disabled>開始冒險 🚀</button>
+  <p style="color:#9c8cb5;font-size:.8em;margin-top:8px;">輸入名字後即可開始</p>
+</div>
+
+<!-- ===== 遊戲中畫面 ===== -->
+<div class="screen" id="gameScreen">
+  <div class="game-header">
+    <span class="stage-badge" id="stageBadge">第一關：部首小偵探</span>
+    <span class="score-badge">⭐ <span id="gameScore">0</span> 分</span>
+    <span class="timer-badge" id="timerBadge">⏱ <span id="timerDisplay">0</span>s</span>
+  </div>
+  <div class="question-area">
+    <div class="question-number" id="qNumber"></div>
+    <div class="question-text" id="qText"></div>
+    <div class="options" id="optionsContainer"></div>
+    <div class="feedback-text" id="feedback"></div>
+  </div>
+  <button class="btn btn-primary" id="btnNext" style="display:none;">下一題 ➡️</button>
+</div>
+
+<!-- ===== 關卡完成畫面 ===== -->
+<div class="screen stage-complete" id="stageScreen">
+  <div class="stage-icon" id="stageIcon"></div>
+  <h2 id="stageTitle"></h2>
+  <div class="stage-stats">
+    <p>本關答對 <b id="stageCorrect">0</b> / 5 題</p>
+    <p>目前總分：<b id="stageTotalScore">0</b> 分</p>
+  </div>
+  <button class="btn btn-primary btn-large" id="btnNextStage">挑戰下一關 🏃</button>
+</div>
+
+<!-- ===== 結束畫面 ===== -->
+<div class="screen" id="finalScreen">
+  <div class="final-icon">🏆</div>
+  <h1>挑戰完成！</h1>
+  <div id="rankDisplay"></div>
+  <div class="final-stats">
+    <div class="stat-row"><span class="stat-label">玩家</span><span class="stat-value" id="finalName"></span></div>
+    <div class="stat-row"><span class="stat-label">總分</span><span class="stat-value" id="finalScore"></span></div>
+    <div class="stat-row"><span class="stat-label">答對題數</span><span class="stat-value" id="finalCorrect"></span></div>
+    <div class="stat-row"><span class="stat-label">總答題數</span><span class="stat-value" id="finalTotal"></span></div>
+    <div class="stat-row"><span class="stat-label">花費時間</span><span class="stat-value" id="finalTime"></span></div>
+  </div>
+  <div class="saving-text" id="savingStatus">正在儲存成績...</div>
+  <div class="leaderboard" id="leaderboard"></div>
+  <button class="btn btn-warning btn-large" id="btnRetry" style="margin-top:16px;">再玩一次 🔄</button>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  // ═══════════════ Supabase 設定 ═══════════════
+  const SUPABASE_URL = 'https://kkqsqlwlxeffdoondlcj.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrcXNxbHdseGVmZmRvb25kbGNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMTkxOTIsImV4cCI6MjEwMDc5NTE5Mn0.ZT1tD-UrCPtfkcTYt3UytTiXi_J2fyqzW1Wbh76NkwI';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // ═══════════════ 題庫 ═══════════════
+  const stages = [
+    {
+      id: 'radical',
+      name: '第一關：部首小偵探',
+      icon: '🔍',
+      desc: '考驗你對部首的認識！',
+      questions: [
+        { q: '「吃」字的部首是什麼？', opts: ['口部', '手部', '火部', '心部'], ans: 0 },
+        { q: '「熱」字下面的「灬」跟什麼有關？', opts: ['水', '土', '火', '木'], ans: 2 },
+        { q: '「打」字左邊的「扌」跟什麼有關？', opts: ['嘴巴', '手', '腳', '眼睛'], ans: 1 },
+        { q: '氵（三點水）的字跟什麼有關？', opts: ['火', '心情', '水', '食物'], ans: 2 },
+        { q: '心部的字通常跟什麼有關？', opts: ['動作', '心情和感覺', '顏色', '味道'], ans: 1 }
+      ]
+    },
+    {
+      id: 'transition',
+      name: '第二關：轉折詞魔法師',
+      icon: '🪄',
+      desc: '轉折詞讓句子的意思轉彎！',
+      questions: [
+        { q: '「雖然很累，____我還是把功課寫完了。」空格應填入？', opts: ['所以', '但是', '因為', '然後'], ans: 1 },
+        { q: '「____下雨了，我____帶雨傘。」正確填入？', opts: ['雖然⋯但是', '因為⋯所以', '不但⋯而且', '首先⋯然後'], ans: 1 },
+        { q: '下列哪個是「轉折詞」？', opts: ['然後', '首先', '但是', '而且'], ans: 2 },
+        { q: '「不但⋯____⋯」空格應填入？', opts: ['所以', '但是', '然後', '而且'], ans: 3 },
+        { q: '轉折詞的功能是什麼？', opts: ['表示原因', '表示前後意思不同', '表示時間順序', '表示地點'], ans: 1 }
+      ]
+    },
+    {
+      id: 'punctuation',
+      name: '第三關：標點符號大師',
+      icon: '✏️',
+      desc: '標點符號讓句子更清楚！',
+      questions: [
+        { q: '「你怎麼還不睡覺」句尾應該加什麼標點？', opts: ['。', '！', '，', '？'], ans: 3 },
+        { q: '「今天天氣真好」句尾應該加什麼標點？', opts: ['。', '！', '？', '，'], ans: 0 },
+        { q: '「書包裡有課本 鉛筆盒 水壺」並列物品中間用什麼？', opts: ['逗號，', '頓號、', '句號。', '驚嘆號！'], ans: 1 },
+        { q: '「我好開心」句尾正確標點是？', opts: ['。', '！', '？', '，'], ans: 1 },
+        { q: '下列哪個不是國語標點符號？', opts: ['句號', '逗號', '加號＋', '問號'], ans: 2 }
+      ]
+    },
+    {
+      id: 'timeorder',
+      name: '第四關：時間順序高手',
+      icon: '⏰',
+      desc: '照順序說故事才清楚！',
+      questions: [
+        { q: '「然後」是什麼類型的關聯詞？', opts: ['轉折詞', '因果詞', '時間順序詞', '遞進詞'], ans: 2 },
+        { q: '下列哪個是「時間順序」關聯詞？', opts: ['但是', '首先', '因為', '雖然'], ans: 1 },
+        { q: '「首先→接著→____→最後」空格應填入？', opts: ['但是', '所以', '然後', '而且'], ans: 2 },
+        { q: '時間標記詞可以幫我們做什麼？', opts: ['知道原因', '了解事情先後順序', '知道地點', '知道人物名字'], ans: 1 },
+        { q: '哪個詞適合用在事情的最後一步？', opts: ['首先', '接著', '然後', '最後'], ans: 3 }
+      ]
+    },
+    {
+      id: 'reading',
+      name: '第五關：篇章閱讀探險家',
+      icon: '📖',
+      desc: '挑戰故事結構與閱讀策略！',
+      questions: [
+        { q: '故事山的「山頂」代表故事的什麼？', opts: ['開始', '經過', '高潮', '結果'], ans: 2 },
+        { q: '5W1H 中的「Where」問的是什麼？', opts: ['誰', '哪裡', '什麼', '為什麼'], ans: 1 },
+        { q: 'T圖表的左邊通常寫什麼？', opts: ['功能', '結果', '結構', '心得'], ans: 2 },
+        { q: '下列哪個<b>不是</b>童話故事的基本元素？', opts: ['角色', '場景', '問題', '價錢'], ans: 3 },
+        { q: '閱讀時「找證據」是什麼意思？', opts: ['隨便猜答案', '從文章找答案', '問同學就好', '看圖片就好'], ans: 1 }
+      ]
+    }
+  ];
+
+  // ═══════════════ 遊戲狀態 ═══════════════
+  let playerName = '';
+  let currentStage = 0;
+  let currentQ = 0;
+  let totalScore = 0;
+  let totalCorrect = 0;
+  let totalQuestions = 0;
+  let stageScores = {}; // per-stage {correct, total}
+  let gameStartTime = 0;
+  let questionStartTime = 0;
+  let answering = false;
+  let qTimer = null;
+  const Q_TIME_LIMIT = 20; // seconds per question
+  let timeLeft = Q_TIME_LIMIT;
+
+  // ═══════════════ DOM elements ═══════════════
+  const $ = id => document.getElementById(id);
+
+  // ═══════════════ 星星背景 ═══════════════
+  (function createStars() {
+    const container = $('stars');
+    for (let i = 0; i < 60; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      const size = Math.random() * 3 + 1;
+      star.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${Math.random()*100}%; top:${Math.random()*100}%;
+        animation-delay:${Math.random()*3}s;
+      `;
+      container.appendChild(star);
+    }
+  })();
+
+  // ═══════════════ 畫面切換 ═══════════════
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    $(id).classList.add('active');
+  }
+
+  // ═══════════════ 開始畫面：名字輸入 ═══════════════
+  const nameInput = $('studentName');
+  const btnStart = $('btnStart');
+
+  nameInput.addEventListener('input', function() {
+    const val = this.value.trim();
+    btnStart.disabled = val.length === 0;
+    if (val.length > 0 && val.length < 2) btnStart.disabled = true;
+  });
+
+  nameInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !btnStart.disabled) startGame();
+  });
+
+  btnStart.addEventListener('click', startGame);
+
+  function startGame() {
+    playerName = nameInput.value.trim();
+    if (!playerName || playerName.length < 1) return;
+    currentStage = 0;
+    totalScore = 0;
+    totalCorrect = 0;
+    totalQuestions = 0;
+    stageScores = {};
+    gameStartTime = Date.now();
+    $('gameScore').textContent = '0';
+    showScreen('gameScreen');
+    startStage();
+  }
+
+  // ═══════════════ 開始關卡 ═══════════════
+  function startStage() {
+    currentQ = 0;
+    const stage = stages[currentStage];
+    $('stageBadge').textContent = stage.name;
+    $('feedback').textContent = '';
+    $('feedback').className = 'feedback-text';
+    $('btnNext').style.display = 'none';
+    showQuestion();
+  }
+
+  // ═══════════════ 顯示題目 ═══════════════
+  function showQuestion() {
+    const stage = stages[currentStage];
+    const qData = stage.questions[currentQ];
+    const totalInStage = stage.questions.length;
+
+    $('qNumber').textContent = `第 ${currentStage + 1} 關 · 第 ${currentQ + 1} / ${totalInStage} 題`;
+    $('qText').textContent = qData.q;
+    $('feedback').textContent = '';
+    $('feedback').className = 'feedback-text';
+    $('btnNext').style.display = 'none';
+
+    const optContainer = $('optionsContainer');
+    optContainer.innerHTML = '';
+    const labels = ['A', 'B', 'C', 'D'];
+    qData.opts.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = `${labels[i]}. ${opt}`;
+      btn.addEventListener('click', () => selectAnswer(i));
+      optContainer.appendChild(btn);
+    });
+
+    // 開始計時
+    timeLeft = Q_TIME_LIMIT;
+    $('timerDisplay').textContent = timeLeft;
+    $('timerBadge').className = 'timer-badge';
+    questionStartTime = Date.now();
+    answering = true;
+    clearInterval(qTimer);
+    qTimer = setInterval(() => {
+      timeLeft--;
+      $('timerDisplay').textContent = timeLeft;
+      if (timeLeft <= 10) $('timerBadge').className = 'timer-badge warning';
+      if (timeLeft <= 5) $('timerBadge').className = 'timer-badge danger';
+      if (timeLeft <= 0) {
+        clearInterval(qTimer);
+        timeUp();
+      }
+    }, 1000);
+  }
+
+  // ═══════════════ 時間到 ═══════════════
+  function timeUp() {
+    if (!answering) return;
+    answering = false;
+    const stage = stages[currentStage];
+    const qData = stage.questions[currentQ];
+    const optBtns = document.querySelectorAll('.option-btn');
+    optBtns.forEach(b => b.classList.add('disabled'));
+    // 標示正確答案
+    optBtns[qData.ans].classList.add('correct');
+    $('feedback').textContent = '⏰ 時間到！正確答案是 ' + ['A','B','C','D'][qData.ans];
+    $('feedback').className = 'feedback-text wrong-fb';
+    totalQuestions++;
+    $('btnNext').style.display = 'inline-block';
+    $('timerBadge').className = 'timer-badge';
+  }
+
+  // ═══════════════ 選擇答案 ═══════════════
+  function selectAnswer(index) {
+    if (!answering) return;
+    answering = false;
+    clearInterval(qTimer);
+
+    const stage = stages[currentStage];
+    const qData = stage.questions[currentQ];
+    const optBtns = document.querySelectorAll('.option-btn');
+    const isCorrect = (index === qData.ans);
+
+    // 禁用所有選項
+    optBtns.forEach(b => b.classList.add('disabled'));
+
+    // 標示正確答案
+    optBtns[qData.ans].classList.add('correct');
+
+    if (isCorrect) {
+      // 計算時間加分：剩餘時間越多，加分越多（最多+10）
+      const timeBonus = Math.floor(timeLeft / 2);
+      const points = 20 + timeBonus;
+      totalScore += points;
+      totalCorrect++;
+      $('gameScore').textContent = totalScore;
+      optBtns[index].classList.add('correct');
+      $('feedback').textContent = `✅ 答對了！+${points} 分（時間加分 +${timeBonus}）`;
+      $('feedback').className = 'feedback-text correct-fb';
+    } else {
+      optBtns[index].classList.add('wrong');
+      $('feedback').textContent = '❌ 答錯了！正確答案是 ' + ['A','B','C','D'][qData.ans];
+      $('feedback').className = 'feedback-text wrong-fb';
+    }
+
+    totalQuestions++;
+    $('timerBadge').className = 'timer-badge';
+    $('btnNext').style.display = 'inline-block';
+  }
+
+  // ═══════════════ 下一題 ═══════════════
+  $('btnNext').addEventListener('click', nextQuestion);
+
+  function nextQuestion() {
+    const stage = stages[currentStage];
+    currentQ++;
+    if (currentQ >= stage.questions.length) {
+      // 關卡完成
+      stageScores[stage.id] = {
+        name: stage.name,
+        correct: totalCorrect - Object.values(stageScores).reduce((s, v) => s + v.correct, 0),
+        total: stage.questions.length
+      };
+      showStageComplete();
+    } else {
+      showQuestion();
+    }
+  }
+
+  // ═══════════════ 關卡完成 ═══════════════
+  function showStageComplete() {
+    const stage = stages[currentStage];
+    const stageCorrect = totalCorrect - Object.values(stageScores)
+      .filter((_, i) => i < currentStage)
+      .reduce((s, v) => s + v.correct, 0);
+
+    $('stageIcon').textContent = stage.icon;
+    $('stageTitle').textContent = stage.name + ' 完成！';
+    $('stageCorrect').textContent = stageCorrect;
+    $('stageTotalScore').textContent = totalScore;
+
+    if (currentStage < stages.length - 1) {
+      $('btnNextStage').textContent = '挑戰下一關 🏃';
+      $('btnNextStage').className = 'btn btn-primary btn-large';
+    } else {
+      $('btnNextStage').textContent = '查看總成績 🏆';
+      $('btnNextStage').className = 'btn btn-success btn-large';
+    }
+    showScreen('stageScreen');
+  }
+
+  $('btnNextStage').addEventListener('click', function() {
+    currentStage++;
+    if (currentStage >= stages.length) {
+      showFinalScreen();
+    } else {
+      showScreen('gameScreen');
+      startStage();
+    }
+  });
+
+  // ═══════════════ 最終畫面 ═══════════════
+  async function showFinalScreen() {
+    const totalSec = Math.floor((Date.now() - gameStartTime) / 1000);
+    const minutes = Math.floor(totalSec / 60);
+    const seconds = totalSec % 60;
+    const timeStr = minutes > 0 ? `${minutes} 分 ${seconds} 秒` : `${seconds} 秒`;
+
+    $('finalName').textContent = playerName;
+    $('finalScore').textContent = `${totalScore} / 500`;
+    $('finalCorrect').textContent = `${totalCorrect} / ${totalQuestions}`;
+    $('finalTotal').textContent = `${totalQuestions} 題`;
+    $('finalTime').textContent = timeStr;
+
+    // 排名徽章
+    let rankClass = 'rank-normal';
+    let rankText = '繼續加油！';
+    if (totalScore >= 450) { rankClass = 'rank-gold'; rankText = '🏅 國語大師！'; }
+    else if (totalScore >= 350) { rankClass = 'rank-silver'; rankText = '🥈 國語高手！'; }
+    else if (totalScore >= 250) { rankClass = 'rank-bronze'; rankText = '🥉 國語好手！'; }
+    $('rankDisplay').innerHTML = `<div class="rank-badge ${rankClass}">${rankText}</div>`;
+
+    showScreen('finalScreen');
+
+    // 儲存到 Supabase
+    $('savingStatus').textContent = '正在儲存成績...';
+    try {
+      const { data, error } = await supabase
+        .from('chinese_game_records')
+        .insert({
+          student_name: playerName,
+          score: totalScore,
+          correct_count: totalCorrect,
+          total_questions: totalQuestions,
+          time_seconds: totalSec,
+          topic_details: stages.map((s, i) => {
+            const stg = Object.values(stageScores).find(v => v.name === s.name);
+            return {
+              stage: s.name,
+              questions: s.questions.length
+            };
+          })
+        })
+        .select();
+
+      if (error) throw error;
+      $('savingStatus').textContent = '✅ 成績已儲存！';
+      $('savingStatus').style.color = '#059669';
+    } catch (err) {
+      console.error('儲存失敗:', err);
+      $('savingStatus').textContent = '⚠️ 儲存失敗（網路問題），請截圖保存！';
+      $('savingStatus').style.color = '#dc2626';
+    }
+
+    // 載入排行榜
+    loadLeaderboard();
+  }
+
+  // ═══════════════ 排行榜 ═══════════════
+  async function loadLeaderboard() {
+    const lb = $('leaderboard');
+    try {
+      const { data, error } = await supabase
+        .from('chinese_game_records')
+        .select('student_name, score, time_seconds, created_at')
+        .order('score', { ascending: false })
+        .order('time_seconds', { ascending: true })
+        .limit(10);
+
+      if (error) throw error;
+      if (!data || data.length === 0) {
+        lb.innerHTML = '<p style="text-align:center;color:#9c8cb5;">尚無其他玩家記錄</p>';
+        return;
+      }
+
+      let html = '<h3>🏅 排行榜 TOP 10</h3>';
+      data.forEach((row, i) => {
+        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}.`;
+        const m = Math.floor(row.time_seconds / 60);
+        const s = row.time_seconds % 60;
+        const t = m > 0 ? `${m}分${s}秒` : `${s}秒`;
+        html += `<div class="lb-item">
+          <span class="lb-rank">${medal}</span>
+          <span class="lb-name">${escapeHtml(row.student_name)}</span>
+          <span>${row.score} 分 · ${t}</span>
+        </div>`;
+      });
+      lb.innerHTML = html;
+    } catch (err) {
+      console.error('載入排行榜失敗:', err);
+      lb.innerHTML = '<p style="text-align:center;color:#9c8cb5;">排行榜載入失敗</p>';
+    }
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // ═══════════════ 再玩一次 ═══════════════
+  $('btnRetry').addEventListener('click', function() {
+    currentStage = 0;
+    currentQ = 0;
+    totalScore = 0;
+    totalCorrect = 0;
+    totalQuestions = 0;
+    stageScores = {};
+    gameStartTime = 0;
+    $('gameScore').textContent = '0';
+    $('timerBadge').className = 'timer-badge';
+    showScreen('startScreen');
+    nameInput.focus();
+  });
+
+  // ═══════════════ 鍵盤快捷鍵（1-4 選答案） ═══════════════
+  document.addEventListener('keydown', function(e) {
+    if (!answering) return;
+    const key = e.key;
+    if (key === '1' || key === '2' || key === '3' || key === '4') {
+      const index = parseInt(key) - 1;
+      selectAnswer(index);
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
