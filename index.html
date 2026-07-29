@@ -49,15 +49,6 @@ h1{font-size:1.6em;margin-bottom:4px}h2{font-size:1.1em;color:#5b3a8c;margin-bot
 .tc-pool{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:4px 0}.tc-chip{padding:5px 10px;background:#fff;border:2px solid #a78bfa;border-radius:6px;font-size:.78em;cursor:pointer;transition:all .2s}
 .tc-chip:hover{background:#ede9fe}.tc-chip.placed{background:#d1fae5;border-color:#10b981;cursor:pointer}
 
-.story-play{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;display:flex;align-items:center;justify-content:center}
-.story-card{background:#fff;border-radius:16px;padding:24px;max-width:520px;width:90%;text-align:center}
-.story-card h2{font-size:1.3em;color:#5b3a8c;margin-bottom:8px}
-.story-frame{font-size:1.15em;padding:18px;margin:8px 0;background:linear-gradient(135deg,#f0fdf4,#e0f2fe);border-radius:12px;min-height:70px;display:flex;align-items:center;justify-content:center;transition:all .5s;line-height:1.6;border:2px solid #a7f3d0}
-.story-icon{font-size:2.5em;margin-right:12px;animation:bounce .6s infinite alternate}
-@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
-.story-dots{display:flex;gap:8px;justify-content:center;margin:10px 0}.story-dot{width:12px;height:12px;border-radius:50%;background:#d1d4fa;transition:all .3s}.story-dot.active{background:#7c5ce7;transform:scale(1.5)}
-.story-progress{height:4px;background:#e8e0f5;border-radius:2px;margin:6px 0}.story-progress-f{height:100%;background:#7c5ce7;border-radius:2px;transition:width 1.5s linear}
-
 .stats{margin:8px auto;max-width:400px}.sr{display:flex;justify-content:space-between;padding:5px 10px;border-bottom:1px solid #e8e0f5;font-size:.9em}.sr:last-child{border-bottom:none}.sl{color:#7c6ba0}.sv{color:#2d1b69;font-weight:bold}
 .diag-box{background:#fafafa;border:2px solid #e8e0f5;border-radius:10px;padding:10px;margin:8px auto;max-width:460px}.diag-box h3{color:#5b3a8c;font-size:.85em;margin-bottom:5px}
 .diag-bar{margin:4px 0;display:flex;align-items:center;gap:5px}.diag-label{width:70px;text-align:right;font-size:.75em;color:#5b3a8c;font-weight:bold}
@@ -196,35 +187,9 @@ function buildSort(q){
   document.querySelectorAll('.sort-i').forEach(el=>el.addEventListener('click',function(){const idx=parseInt(this.dataset.idx);if(sO.includes(idx))return;sO.push(idx);this.classList.add('done');render();}));
   $('sortReset').addEventListener('click',()=>{sO=[];document.querySelectorAll('.sort-i').forEach(el=>el.classList.remove('done'));render();});
   $('sortCheck').addEventListener('click',()=>{
-    if(JSON.stringify(sO)===JSON.stringify(q.ans)){win(q.pts,q.x);setTimeout(()=>playStory(q),600);}
+    if(JSON.stringify(sO)===JSON.stringify(q.ans)){win(q.pts,q.x);}
     else{loseNoAnswer(q.x,q.hint,()=>{sO=[];document.querySelectorAll('.sort-i').forEach(el=>el.classList.remove('done'));buildSort(q);},false);}
   });
-}
-
-// ═══ 故事播放（影音風格）═══
-function playStory(q){
-  const items=q.ans.map(i=>q.items[i]);
-  const icons=['🌙','🌅','🌤️','🌧️','☀️']; // just for 颱風天
-  const ov=document.createElement('div');ov.className='story-play';
-  let d='',pr='';
-  for(let i=0;i<items.length;i++){d+='<div class="story-dot'+(i===0?' active':'')+'"></div>';pr+='<div class="story-progress-f" style="width:'+(i===0?'0':'100')+'%"></div>';}
-  ov.innerHTML='<div class="story-card"><h2>🎬 故事播放中</h2><div class="story-frame"><span class="story-icon">'+icons[0]+'</span><span id="sftxt">'+items[0]+'</span></div><div class="story-dots">'+d+'</div><div class="story-progress"><div class="story-progress-f" id="sprog" style="width:0%"></div></div><button class="btn btn-p" id="sclose" style="display:none">關閉 ▶</button></div>';
-  document.body.appendChild(ov);
-  let step=0;
-  const sf=document.getElementById('sftxt'),si=ov.querySelector('.story-icon'),ds=ov.querySelectorAll('.story-dot'),sp=document.getElementById('sprog');
-  const nx=()=>{
-    step++;if(step>=items.length){ov.querySelector('#sclose').style.display='inline-block';sp.style.width='100%';return;}
-    sf.style.opacity='0';si.style.opacity='0';
-    setTimeout(()=>{sf.textContent=items[step];si.textContent=icons[step]||'📖';sf.style.opacity='1';si.style.opacity='1';
-      ds.forEach((dd,i)=>{dd.classList.toggle('active',i===step);});
-      sp.style.width=((step+1)/items.length*100)+'%';
-    },300);
-    setTimeout(nx,1800);
-  };
-  ov.addEventListener('click',e=>{if(e.target===ov)fin();});ov.querySelector('#sclose').addEventListener('click',fin);
-  function fin(){ov.remove();}
-  sp.style.width=(1/items.length*100)+'%';
-  setTimeout(nx,1800);
 }
 
 // ═══ 轉折配對（答錯可重試）═══
@@ -245,10 +210,32 @@ function buildPair(q){
   $('pc').addEventListener('click',()=>{const allLeftOk=Array.from(document.querySelectorAll('.pair-card[data-side="left"]')).every(c=>c.classList.contains('ok'));if(!allLeftOk){$('fb').textContent='還有沒配對的！';$('fb').className='fb ng';return;}const allOk=document.querySelectorAll('.pair-card.ok').length===q.left.length*2;if(allOk)win(q.pts,q.x);else loseNoAnswer(q.x,q.hint,()=>{buildPair(q);},true);});
 }
 
-// ═══ 填空（答錯可重試）═══
-let fB=[];
-function buildFill(q){fB=[];$('gz').innerHTML='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:6px">'+q.title+'</h2><p style="font-size:.8em;color:#7c6ba0">點選下方的標點符號，它會自動填入下一個空格。點已填的空格可移除。</p><div class="fill-p" id="fp"></div><div class="ppal" id="ppal"></div>';const fp=$('fp');let th=q.text;q.blanks.forEach((b,i)=>{th=th.replace(b,'<span class="fill-gap" data-idx="'+i+'">□</span>');});fp.innerHTML=th;q.choices.forEach(ch=>{const b=document.createElement('div');b.className='pp';b.textContent=ch;b.addEventListener('click',()=>{const g=document.querySelectorAll('.fill-gap:not(.done)');if(g.length===0)return;const gap=g[0];const idx=parseInt(gap.dataset.idx);fB[idx]=ch;gap.textContent=ch;gap.classList.add('done');document.querySelectorAll('.pp').forEach(p=>{if(p.textContent===ch)p.classList.add('u');});if(fB.filter(b=>b!==undefined).length===q.blanks.length){if(JSON.stringify(fB.slice(0,q.ans.length))===JSON.stringify(q.ans))win(q.pts,q.x);else loseNoAnswer(q.x,q.hint,()=>{fB=[];buildFill(q);},true);}});$('ppal').appendChild(b);});
-  document.querySelectorAll('.fill-gap').forEach(g=>g.addEventListener('click',function(){const idx=parseInt(this.dataset.idx);if(fB[idx]!==undefined){const old=fB[idx];fB[idx]=undefined;this.textContent='□';this.classList.remove('done');document.querySelectorAll('.pp').forEach(p=>{let c=0;document.querySelectorAll('.fill-gap.done').forEach(dg=>{if(dg.textContent===p.textContent)c++;});if(p.textContent===old&&c===0)p.classList.remove('u');});}}));
+// ═══ 填空（點空格選取，再點符號填入）═══
+let fB=[],fGapSel=null;
+function buildFill(q){
+  fB=[];fGapSel=null;
+  $('gz').innerHTML='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:4px">'+q.title+'</h2><p style="font-size:.78em;color:#7c6ba0">步驟：① 點一個 □ 選取它 → ② 點下方標點符號填入。可點已填的 □ 移除重填。</p><div class="fill-p" id="fp"></div><div class="ppal" id="ppal"></div>';
+  const fp=$('fp');let th=q.text;q.blanks.forEach((b,i)=>{th=th.replace(b,'<span class="fill-gap" data-idx="'+i+'">□</span>');});fp.innerHTML=th;
+  q.choices.forEach(ch=>{
+    const b=document.createElement('div');b.className='pp';b.textContent=ch;
+    b.addEventListener('click',()=>{
+      if(!fGapSel)return;
+      const idx=parseInt(fGapSel.dataset.idx);
+      if(fB[idx]!==undefined){fB[idx]=undefined;fGapSel.textContent='□';fGapSel.classList.remove('done');}
+      fB[idx]=ch;fGapSel.textContent=ch;fGapSel.classList.add('done');
+      document.querySelectorAll('.pp').forEach(p=>{let c=0;document.querySelectorAll('.fill-gap.done').forEach(dg=>{if(dg.textContent===p.textContent)c++;});if(c>0)p.classList.add('u');else p.classList.remove('u');});
+      fGapSel.style.background='';fGapSel=null;
+      if(fB.filter(b=>b!==undefined).length===q.blanks.length){
+        if(JSON.stringify(fB.slice(0,q.ans.length))===JSON.stringify(q.ans))win(q.pts,q.x);
+        else loseNoAnswer(q.x,q.hint,()=>{fB=[];buildFill(q);},true);
+      }
+    });$('ppal').appendChild(b);
+  });
+  document.querySelectorAll('.fill-gap').forEach(g=>g.addEventListener('click',function(){
+    if(fGapSel)fGapSel.style.background='';fGapSel=this;this.style.background='#fef3c7';
+    const idx=parseInt(this.dataset.idx);
+    if(fB[idx]!==undefined){const old=fB[idx];fB[idx]=undefined;this.textContent='□';this.classList.remove('done');document.querySelectorAll('.pp').forEach(p=>{let c=0;document.querySelectorAll('.fill-gap.done').forEach(dg=>{if(dg.textContent===p.textContent)c++;});if(p.textContent===old&&c===0)p.classList.remove('u');});}
+  }));
 }
 
 // ═══ T圖表（可移動已放置的項目）═══
