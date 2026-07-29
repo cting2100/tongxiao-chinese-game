@@ -78,7 +78,7 @@ h2{font-size:1.1em;color:#5b3a8c;margin-bottom:6px}
   <h2>18 關挑戰！用課堂策略打敗題目怪獸 👾</h2>
   <div class="inp"><label for="ni">⚔️ 輸入你的名字，加入作戰：</label><input type="text" id="ni" placeholder="例如：小明" maxlength="20" autocomplete="off"></div>
   <button class="btn btn-p btn-lg" id="bg" disabled>⚔️ 開始作戰 ▶</button>
-  <p style="color:#9c8cb5;font-size:.75em;margin-top:4px">答錯可以重試，答對後才進入下一關</p>
+  <p style="color:#9c8cb5;font-size:.7em;margin-top:4px">v3 · 答錯可重試 · 排序可撤銷</p>
 </div>
 
 <div class="scr" id="sg">
@@ -143,16 +143,17 @@ function run(){
 
 function win(pts,x){
   sc+=pts;co++;$('cs').textContent=sc;$('fb').textContent='✅ 答對了！（+'+pts+' 分）';$('fb').className='fb ok';$('ex').textContent='💡 '+x;$('ex').style.display='block';$('hb').style.display='none';
-  $('btns').innerHTML='<button class="btn btn-p" onclick="qi++;run()">下一關 ▶</button>';
+  const nb=document.createElement('button');nb.className='btn btn-p';nb.textContent='下一關 ▶';nb.addEventListener('click',()=>{qi++;run();});
+  $('btns').innerHTML='';$('btns').appendChild(nb);
 }
 function loseWithRetry(x,hint,retryFn){
   tries++;const tryMsg=tries>1?'（第'+tries+'次嘗試）':'';
   $('fb').textContent='❌ 不對喔！再看看提示，再試一次！'+tryMsg;$('fb').className='fb ng';
   $('hb').innerHTML=hint;$('hb').style.display='block';
   $('ex').textContent='💡 '+x;$('ex').style.display='block';
-  $('btns').innerHTML='<button class="btn btn-w" id="retryBtn">🔄 再試一次</button><button class="btn btn-p" id="skipBtn" style="margin-left:6px">跳過 ▶</button>';
-  $('retryBtn').addEventListener('click',()=>{retryFn();});
-  $('skipBtn').addEventListener('click',()=>{qi++;run();});
+  $('btns').innerHTML='';
+  const rb=document.createElement('button');rb.className='btn btn-w';rb.textContent='🔄 再試一次';rb.addEventListener('click',()=>{retryFn();});$('btns').appendChild(rb);
+  const sb=document.createElement('button');sb.className='btn btn-p';sb.textContent='跳過 ▶';sb.style.marginLeft='6px';sb.addEventListener('click',()=>{qi++;run();});$('btns').appendChild(sb);
   if(!wrongCount[ALL[qi].day])wrongCount[ALL[qi].day]=0;wrongCount[ALL[qi].day]++;
 }
 
