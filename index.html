@@ -54,6 +54,15 @@ h1{font-size:1.5em;color:#1a1a2e;margin-bottom:4px}h2{font-size:1.1em;color:#5b3
 .sort-chip{padding:4px 8px;background:#dbeafe;border:1px solid #60a5fa;border-radius:6px;font-size:.78em;color:#1e40af}
 .sort-chip.bad{background:#fee2e2;border-color:#ef4444;color:#991b1b}
 
+.story-play{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:flex;align-items:center;justify-content:center}
+.story-card{background:#fff;border-radius:16px;padding:24px;max-width:500px;width:90%;text-align:center}
+.story-card h2{font-size:1.3em;color:#5b3a8c;margin-bottom:12px}
+.story-frame{font-size:1.1em;padding:16px;margin:8px 0;background:#f0fdf4;border-radius:10px;min-height:60px;display:flex;align-items:center;justify-content:center;transition:all .5s;line-height:1.6}
+.story-frame .step-num{font-size:2em;margin-right:10px}
+.story-dots{display:flex;gap:6px;justify-content:center;margin:8px 0}
+.story-dot{width:10px;height:10px;border-radius:50%;background:#d1d4fa;transition:all .3s}
+.story-dot.active{background:#7c5ce7;transform:scale(1.4)}
+
 /* 填空 */
 .fill-p{font-size:.9em;line-height:1.8;text-align:left;margin:6px 0;color:#2d1b69}
 .fill-gap{display:inline-block;width:40px;text-align:center;border-bottom:2px dashed #f59e0b;margin:0 3px;cursor:pointer;font-size:1.2em;font-weight:bold;color:#d97706;transition:all .2s}
@@ -197,10 +206,92 @@ function buildRad(q){
   }));
 }
 
-// ═══ 排序 ═══
-let sO=[];
-function buildSort(q){sO=[];let h='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:6px">'+q.title+'</h2><div class="sort-res"><span style="color:#9c8cb5;font-size:.8em">已排：</span></div><div>';q.items.forEach((it,i)=>{h+='<div class="sort-i" data-idx="'+i+'">'+it+'</div>';});h+='</div>';$('gz').innerHTML=h;
-  document.querySelectorAll('.sort-i').forEach(el=>el.addEventListener('click',function(){const idx=parseInt(this.dataset.idx);if(sO.includes(idx))return;sO.push(idx);this.classList.add('done');const res=document.querySelector('.sort-res');let rh='<span style="color:#9c8cb5;font-size:.8em">已排：</span>';sO.forEach(i=>{rh+='<span class="sort-chip">'+q.items[i]+'</span>';});res.innerHTML=rh;if(sO.length===q.items.length){if(JSON.stringify(sO)===JSON.stringify(q.ans))win(q.pts,q.x);else{rh='';sO.forEach(i=>{rh+='<span class="sort-chip bad">'+q.items[i]+'</span>';});res.innerHTML='<span style="color:#9c8cb5;font-size:.8em">你的答案：</span>'+rh;lose(q.x,q.hint)}}}));
+// ═══ 排序（支援撤銷、重來、正確後動畫播放）═══
+let sO=[],sortQ=null;
+function buildSort(q){
+  sortQ=q;sO=[];
+  let h='<h2 style="color:#2d1b69;font-size:1em;margin-bottom:6px">'+q.title+'</h2>';
+  h+='<div class="sort-res" id="sortRes"><span style="color:#9c8cb5;font-size:.8em">點選句子排列順序（可點上方已排項目移除）：</span></div><div>';
+  q.items.forEach((it,i)=>{h+='<div class="sort-i" data-idx="'+i+'">'+it+'</div>';});
+  h+='</div>';
+  // 按鈕區
+  h+='<div style="margin-top:8px;display:flex;gap:6px;justify-content:center">';
+  h+='<button class="btn btn-w" id="sortReset" style="display:none">🔄 重排</button>';
+  h+='<button class="btn btn-s" id="sortCheck" style="display:none">✓ 確定順序</button>';
+  h+='</div>';
+  $('gz').innerHTML=h;
+
+  function renderRes(){
+    const res=$('sortRes');
+    let rh='';
+    sO.forEach((idx,i)=>{
+      rh+='<span class="sort-chip" data-pos="'+i+'" style="cursor:pointer" title="點擊移除">'+(i+1)+'. '+q.items[idx]+' ✕</span>';
+    });
+    if(sO.length===0)rh='<span style="color:#9c8cb5;font-size:.8em">點選下方句子排列順序（可點上方項目移除）</span>';
+    res.innerHTML=rh;
+    // 點已排項目可移除
+    res.querySelectorAll('.sort-chip').forEach(chip=>{
+      chip.addEventListener('click',function(){
+        const pos=parseInt(this.dataset.pos);
+        const removed=sO.splice(pos,1)[0];
+        document.querySelectorAll('.sort-i')[removed].classList.remove('done');
+        renderRes();
+        updateSortBtns();
+      });
+    });
+    updateSortBtns();
+  }
+  function updateSortBtns(){
+    $('sortReset').style.display=sO.length>0?'inline-block':'none';
+    $('sortCheck').style.display=sO.length===q.items.length?'inline-block':'none';
+  }
+
+  document.querySelectorAll('.sort-i').forEach(el=>el.addEventListener('click',function(){
+    const idx=parseInt(this.dataset.idx);
+    if(sO.includes(idx))return;
+    sO.push(idx);this.classList.add('done');renderRes();
+    if(sO.length===q.items.length)updateSortBtns();
+  }));
+
+  $('sortReset').addEventListener('click',()=>{
+    sO=[];document.querySelectorAll('.sort-i').forEach(el=>el.classList.remove('done'));renderRes();
+  });
+
+  $('sortCheck').addEventListener('click',()=>{
+    if(sO.length!==q.items.length)return;
+    if(JSON.stringify(sO)===JSON.stringify(q.ans)){
+      win(q.pts,q.x);
+      setTimeout(()=>playStory(q),600);
+    }else{
+      let rh='';sO.forEach(i=>{rh+='<span class="sort-chip bad">'+q.items[i]+'</span>';});
+      $('sortRes').innerHTML='<span style="color:#ef4444;font-size:.8em">❌ 不太對：</span>'+rh;
+      $('fb').textContent='順序不對，你可以按「重排」再試一次！';$('fb').className='fb ng';
+      $('hb').innerHTML=q.hint;$('hb').style.display='block';
+    }
+  });
+}
+
+// ═══ 故事動畫播放 ═══
+function playStory(q){
+  const items=q.ans.map(i=>q.items[i]);
+  const overlay=document.createElement('div');overlay.className='story-play';
+  let dots='';for(let i=0;i<items.length;i++)dots+='<div class="story-dot'+(i===0?' active':'')+'"></div>';
+  overlay.innerHTML=`<div class="story-card"><h2>🎬 故事播放中</h2><div class="story-frame" id="sframe">${items[0]}</div><div class="story-dots">${dots}</div><button class="btn btn-p" id="sclose" style="display:none">關閉 ▶</button></div>`;
+  document.body.appendChild(overlay);
+  let step=0;
+  const frame=$('sframe'),dots=overlay.querySelectorAll('.story-dot');
+  const next=()=>{
+    step++;if(step>=items.length){overlay.querySelector('#sclose').style.display='inline-block';return;}
+    frame.style.opacity='0';frame.style.transform='translateY(10px)';
+    setTimeout(()=>{frame.textContent=items[step];frame.style.opacity='1';frame.style.transform='translateY(0)';
+      dots.forEach((d,i)=>{d.classList.toggle('active',i===step);});
+    },300);
+    setTimeout(next,1500);
+  };
+  overlay.addEventListener('click',e=>{if(e.target===overlay)finish();});
+  overlay.querySelector('#sclose').addEventListener('click',finish);
+  function finish(){overlay.remove();}
+  setTimeout(next,1500);
 }
 
 // ═══ 轉折配對 ═══
